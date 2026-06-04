@@ -1,0 +1,12 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+.vscode
+
+# Private trainer-only notes (per module / day)
+**/speaker_notes.md
+**/speaker_notes/
+

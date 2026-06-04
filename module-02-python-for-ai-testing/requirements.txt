@@ -1,0 +1,18 @@
+# Module 2 — Python for AI Testing & Automation
+# Progressive deps — only Day 4+ actually needs the LLM SDKs.
+
+# Core
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# LLM clients (Day 4+)
+openai>=1.0.0
+anthropic>=0.25.0
+
+# Testing (Day 5+)
+pytest>=8.0.0
+pytest-html>=4.1.0
+pytest-xdist>=3.5.0   # parallel test execution (Day 6)
+
+# Nice-to-haves
+rich>=13.0.0          # pretty terminal output

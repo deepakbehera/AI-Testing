@@ -1,0 +1,5 @@
+# Ollama exposes an OpenAI-compatible API, so the OpenAI SDK is all we need
+# by default. Keep anthropic as an optional swap.
+openai>=1.0.0
+anthropic>=0.25.0
+python-dotenv>=1.0.0
