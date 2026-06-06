@@ -1,0 +1,146 @@
+name: LLM Evaluation — DeepEval
+
+# ── Triggers ──────────────────────────────────────────────────────────────────
+on:
+  push:
+    branches: [main]
+    paths:
+      - "module-04-deepeval-llm-testing/**"
+      - ".github/workflows/llm-eval.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "module-04-deepeval-llm-testing/**"
+  schedule:
+    - cron: "0 2 * * 1"      # every Monday 2 AM UTC — nightly drift detection
+  workflow_dispatch:           # manual "Run workflow" button in Actions tab
+
+# ── Jobs ──────────────────────────────────────────────────────────────────────
+jobs:
+
+  # ── Job 1: Fast tests (no LLM calls) ────────────────────────────────────────
+  unit-tests:
+    name: Unit Tests (fast)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('module-04-deepeval-llm-testing/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: pip install -r module-04-deepeval-llm-testing/requirements.txt
+
+      - name: Run unit tests (no LLM calls)
+        run: |
+          cd module-04-deepeval-llm-testing
+          pytest tests/ -v -m "not slow" --tb=short --html=unit_report.html --self-contained-html
+
+      - name: Upload unit test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unit-test-report
+          path: module-04-deepeval-llm-testing/unit_report.html
+          retention-days: 14
+
+  # ── Job 2: DeepEval eval suite (calls LLM + judge) ───────────────────────────
+  llm-eval:
+    name: LLM Evaluation Suite
+    runs-on: ubuntu-latest
+    needs: unit-tests        # only run if fast tests pass first
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('module-04-deepeval-llm-testing/requirements.txt') }}
+
+      - name: Install dependencies
+        run: pip install -r module-04-deepeval-llm-testing/requirements.txt
+
+      - name: Run DeepEval suite
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          DEEPEVAL_JUDGE_MODEL: gpt-4o-mini
+          PROVIDER: openai
+          DEMO_MODEL: gpt-4o-mini
+        run: |
+          cd module-04-deepeval-llm-testing
+          pytest tests/ -v -m "slow" --tb=short \
+            --html=eval_report.html --self-contained-html \
+            -q 2>&1 | tee eval_output.txt
+
+      - name: Upload eval report
+        uses: actions/upload-artifact@v4
+        if: always()         # upload even on failure — you need the report to debug
+        with:
+          name: deepeval-report
+          path: |
+            module-04-deepeval-llm-testing/eval_report.html
+            module-04-deepeval-llm-testing/eval_output.txt
+          retention-days: 30
+
+      - name: Write job summary
+        if: always()
+        run: |
+          echo "## DeepEval Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Threshold | Result |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| AnswerRelevancy | 0.70 | see report |" >> $GITHUB_STEP_SUMMARY
+          echo "| Faithfulness    | 0.80 | see report |" >> $GITHUB_STEP_SUMMARY
+          echo "| Correctness     | 0.70 | see report |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📄 Download the full HTML report from the Artifacts section above." >> $GITHUB_STEP_SUMMARY
+
+  # ── Job 3: Nightly drift detection (schedule only) ───────────────────────────
+  drift-check:
+    name: Model Drift Detection
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'    # only runs on cron, not on push/PR
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('module-04-deepeval-llm-testing/requirements.txt') }}
+
+      - name: Install dependencies
+        run: pip install -r module-04-deepeval-llm-testing/requirements.txt
+
+      - name: Run drift detection suite
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PROVIDER: openai
+          DEMO_MODEL: gpt-4o-mini
+        run: |
+          cd module-04-deepeval-llm-testing
+          pytest tests/test_drift.py -v --tb=short \
+            --html=drift_report.html --self-contained-html
+
+      - name: Upload drift report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: drift-detection-report-${{ github.run_id }}
+          path: module-04-deepeval-llm-testing/drift_report.html
+          retention-days: 90    # keep longer — used to spot trends over time

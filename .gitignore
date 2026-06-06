@@ -5,6 +5,7 @@ __pycache__/
 .env
 .DS_Store
 .vscode
+.claude
 
 # Private trainer-only notes (per module / day)
 **/speaker_notes.md
