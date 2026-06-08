@@ -9,7 +9,7 @@ difference, then stream both responses side by side.
 
 Run:
     ollama serve
-    python examples/day2_token_sensitivity.py
+    python examples/token_sensitivity.py
 """
 
 import os

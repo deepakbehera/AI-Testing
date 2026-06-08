@@ -17,8 +17,8 @@ the same workflow at scale. Understanding this first means you know what
 the automation is doing.
 
 Run:
-    python examples/day3_redteam_basics.py
-    PROVIDER=openai python examples/day3_redteam_basics.py
+    python examples/redteam_basics.py
+    PROVIDER=openai python examples/redteam_basics.py
 
 Note: some probes intentionally test borderline behavior.
 Not all models will pass all probes — failing probes are findings, not errors.

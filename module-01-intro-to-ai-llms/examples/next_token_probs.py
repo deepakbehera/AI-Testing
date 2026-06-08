@@ -12,10 +12,10 @@ If logprobs aren't returned, falls back to showing just the completion.
 
 Run:
     # Works best with OpenAI:
-    PROVIDER=openai python examples/day3_next_token_probs.py
+    PROVIDER=openai python examples/next_token_probs.py
 
     # Also try locally:
-    ollama serve && python examples/day3_next_token_probs.py
+    ollama serve && python examples/next_token_probs.py
 """
 
 import math

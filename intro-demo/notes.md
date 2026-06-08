@@ -90,7 +90,7 @@ ollama pull llama3.2:3b
 ollama serve                       # keep this running in a separate terminal
 
 # 2. Clone this repo and set up the Python env
-cd day-00-demo
+cd intro-demo
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt

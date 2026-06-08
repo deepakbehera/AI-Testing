@@ -1,7 +1,7 @@
 """
 Golden-suite tests — one test case per entry in data/golden_prompts.json.
 
-Run from `examples/day6_framework/`:
+Run from `examples/test_framework/`:
     pytest tests/ -v
     pytest tests/ -v --html=report.html --self-contained-html
     pytest tests/ -n auto                    # parallel

@@ -26,7 +26,7 @@ This repo is my working notebook for the course — lecture notes, code samples,
 
 ```
 .
-├── day-00-demo/                 # Demo / intro session (pre-module)
+├── intro-demo/                  # Demo / intro session (pre-module)
 ├── module-01-intro-to-ai-llms/
 ├── module-02-python-for-ai-testing/
 ├── module-03-ai-testing-fundamentals/

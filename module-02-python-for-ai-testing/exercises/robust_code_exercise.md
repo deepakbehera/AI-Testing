@@ -1,4 +1,4 @@
-# Day 3 — Exercise: Robust Code — Exceptions, Logging & Retries
+# Exercise: Robust Code — Exceptions, Logging & Retries
 
 **Estimated time:** 35–45 minutes
 
@@ -6,7 +6,7 @@
 
 ## Part A — Robust JSON Parser (15 min)
 
-Create `exercises/day3_solution.py`.
+Create `exercises/robust_code_solution.py`.
 
 Write a function `robust_parse_llm_response(raw: str) -> tuple[dict | None, str]` that:
 1. Strips prose wrappers and markdown fences to find JSON.

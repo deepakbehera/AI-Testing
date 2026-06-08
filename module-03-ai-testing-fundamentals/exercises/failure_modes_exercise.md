@@ -1,4 +1,4 @@
-# Day 2 — Exercise
+# Exercise: Failure Modes & Probing
 
 Estimated time: 30–40 minutes
 
@@ -17,7 +17,7 @@ Suggested tasks:
 - "Explain what temperature does in an LLM."
 - "List three use cases for a vector database."
 
-Create a file `exercises/day2_sensitivity_suite.py` that:
+Create a file `exercises/sensitivity_suite.py` that:
 1. Stores your 5 prompts in a list.
 2. Calls the LLM for each prompt (reuse the client from Module 2 Day 4, or the raw OpenAI/Ollama API).
 3. Prints all 5 responses side-by-side.
@@ -60,7 +60,7 @@ In your personal notes, write:
 
 ## Self-check
 
-- [ ] `day2_sensitivity_suite.py` runs and prints all 5 responses
+- [ ] `sensitivity_suite.py` runs and prints all 5 responses
 - [ ] You have a qualitative sense of which paraphrases shift the output most
 - [ ] `test_pii_canary.py` runs with `pytest` and you can read the output
 - [ ] If the canary leaked — you noted which prompt caused it

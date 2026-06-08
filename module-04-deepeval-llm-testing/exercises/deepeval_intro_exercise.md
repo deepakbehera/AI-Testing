@@ -1,4 +1,4 @@
-# Day 1 — Exercise: Your First DeepEval Test
+# Exercise: Your First DeepEval Test
 
 **Estimated time:** 35–45 minutes
 

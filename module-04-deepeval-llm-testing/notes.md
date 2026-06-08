@@ -119,9 +119,9 @@ The judge's score becomes the metric score. This is why:
 - Use a stronger judge than the model being tested when possible
 
 ### Demo you'll see
-**`examples/day1_deepeval_intro.ipynb`** — setup, first `LLMTestCase`, `AnswerRelevancyMetric`, reading scores and reasons.
+**`examples/deepeval_intro.ipynb`** — setup, first `LLMTestCase`, `AnswerRelevancyMetric`, reading scores and reasons.
 
-Exercise: [`exercises/day1_exercise.md`](exercises/day1_exercise.md)
+Exercise: [`exercises/deepeval_intro_exercise.md`](exercises/deepeval_intro_exercise.md)
 
 ---
 
@@ -221,9 +221,9 @@ print(metric.reason)
 ```
 
 ### Demo you'll see
-**`examples/day2_metrics_deep_dive.ipynb`**
+**`examples/metrics_deep_dive.ipynb`**
 
-Exercise: [`exercises/day2_exercise.md`](exercises/day2_exercise.md)
+Exercise: [`exercises/core_metrics_exercise.md`](exercises/core_metrics_exercise.md)
 
 ---
 
@@ -305,9 +305,9 @@ def test_golden(case):
 ```
 
 ### Demo you'll see
-**`examples/day3_golden_datasets.ipynb`**
+**`examples/golden_datasets.ipynb`**
 
-Exercise: [`exercises/day3_exercise.md`](exercises/day3_exercise.md)
+Exercise: [`exercises/golden_datasets_exercise.md`](exercises/golden_datasets_exercise.md)
 
 ---
 
@@ -397,9 +397,9 @@ metric = LatencyMetric(max_seconds=5.0)
 ```
 
 ### Demo you'll see
-**`examples/day4_custom_metrics.ipynb`**
+**`examples/custom_metrics.ipynb`**
 
-Exercise: [`exercises/day4_exercise.md`](exercises/day4_exercise.md)
+Exercise: [`exercises/custom_metrics_exercise.md`](exercises/custom_metrics_exercise.md)
 
 ---
 
@@ -472,9 +472,9 @@ schedule:
 Run the full eval suite weekly to detect **model drift** — degradation in quality without any code change (e.g., OpenAI silently updated a model).
 
 ### Demo you'll see
-**`examples/day5_deepeval_ci.ipynb`** + **`examples/day5_ci/llm-eval.yml`**
+**`examples/deepeval_ci.ipynb`** + **`examples/ci_integration/llm-eval.yml`**
 
-Exercise: [`exercises/day5_exercise.md`](exercises/day5_exercise.md)
+Exercise: [`exercises/cicd_exercise.md`](exercises/cicd_exercise.md)
 
 ---
 

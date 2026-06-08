@@ -1,4 +1,4 @@
-# Day 6 — Exercise: Building a Mini Test Framework
+# Exercise: Building a Mini Test Framework
 
 **Estimated time:** 45–60 minutes
 
@@ -6,13 +6,13 @@
 
 ## Goal
 
-Extend the `day6_framework/` with new test cases, a new test module, and enhanced reporting.
+Extend the `test_framework/` with new test cases, a new test module, and enhanced reporting.
 
 ---
 
 ## Part A — Expand the Golden Dataset (15 min)
 
-Open `day6_framework/data/golden_prompts.json`. Add **8 new test cases** — at least 2 from each category:
+Open `test_framework/data/golden_prompts.json`. Add **8 new test cases** — at least 2 from each category:
 
 **Category: Translation**
 - Ask the model to translate a word to another language. Assert the expected translation appears.
@@ -28,14 +28,14 @@ Open `day6_framework/data/golden_prompts.json`. Add **8 new test cases** — at 
 
 **Run the suite** and confirm all new cases appear in the output:
 ```bash
-cd day6_framework && pytest -v
+cd test_framework && pytest -v
 ```
 
 ---
 
 ## Part B — New Test Module: Consistency (20 min)
 
-Create `day6_framework/tests/test_consistency.py`.
+Create `test_framework/tests/test_consistency.py`.
 
 This module runs each prompt **3 times** and asserts that the key term appears in at least 2 of 3 responses.
 
@@ -59,7 +59,7 @@ The test should:
 
 ## Part C — Latency Budgets (10 min)
 
-Add to `day6_framework/tests/test_latency.py` (already exists) or create it:
+Add to `test_framework/tests/test_latency.py` (already exists) or create it:
 
 ```python
 @pytest.mark.parametrize("prompt, max_ms", [
@@ -77,7 +77,7 @@ def test_latency_within_budget(prompt, max_ms, llm_client):
 
 1. Run the full suite with parallel execution and generate a report:
    ```bash
-   cd day6_framework
+   cd test_framework
    pytest -n auto -v --html=full_report.html --self-contained-html --tb=short
    ```
 2. Open `full_report.html`. Take a screenshot or note:

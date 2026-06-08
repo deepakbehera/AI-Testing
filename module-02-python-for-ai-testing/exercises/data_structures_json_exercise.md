@@ -1,4 +1,4 @@
-# Day 2 — Exercise: Data Structures & JSON
+# Exercise: Data Structures & JSON
 
 **Estimated time:** 30–40 minutes
 
@@ -6,7 +6,7 @@
 
 ## Part A — JSON Parsing Pipeline (20 min)
 
-Create `exercises/day2_solution.py`.
+Create `exercises/data_structures_solution.py`.
 
 Ask the LLM for a structured JSON description of a **restaurant menu item** (your choice). The JSON must have:
 - `name`: string
@@ -27,7 +27,7 @@ Your script must:
    - `ingredients` must have at least 4 items
    - `preparation_time_minutes` must be a positive integer
 6. Print the full result: raw response → parsed dict → validation outcome (PASS or FAIL with reasons).
-7. Save the parsed JSON to `exercises/day2_menu_item.json`.
+7. Save the parsed JSON to `exercises/data_structures_menu_item.json`.
 
 ---
 
@@ -47,7 +47,7 @@ Write a function `build_golden_dataset(items: list[dict]) -> list[dict]` that ta
 }
 ```
 
-Save the resulting list to `exercises/day2_golden.json`.
+Save the resulting list to `exercises/data_structures_golden.json`.
 
 ---
 
@@ -78,7 +78,7 @@ Using only comprehensions and built-ins, produce:
 - [ ] `safe_parse()` handles a response with markdown fences correctly
 - [ ] Validation catches a wrong type (e.g., `price_usd` as string)
 - [ ] `build_golden_dataset` produces valid Day-6-format test cases
-- [ ] `day2_menu_item.json` and `day2_golden.json` both exist and are valid JSON
+- [ ] `data_structures_menu_item.json` and `data_structures_golden.json` both exist and are valid JSON
 - [ ] All Part C comprehensions work without error
 
 ## Original Goal (preserved)
@@ -86,7 +86,7 @@ Call an LLM, parse its JSON response, and validate it.
 
 ## Tasks
 
-1. **Copy and modify** `examples/day2_json_parsing.py` into `exercises/day2_my_parser.py`.
+1. **Copy and modify** `examples/json_parsing.py` into `exercises/data_structures_my_parser.py`.
 2. **Change the prompt** to ask for a **restaurant menu item**. It should return JSON with keys:
    - `name` (string)
    - `price_usd` (number)
@@ -99,7 +99,7 @@ Call an LLM, parse its JSON response, and validate it.
    - `ingredients` has at least 4 items.
    - `price_usd` is positive.
 4. **Run it 3 times**. Does the model always produce valid JSON? What fails most often?
-5. **Write down** in `exercises/day2_observations.md`:
+5. **Write down** in `exercises/data_structures_observations.md`:
    - How many runs out of 3 passed validation?
    - Which field failed most often, and why do you think?
 

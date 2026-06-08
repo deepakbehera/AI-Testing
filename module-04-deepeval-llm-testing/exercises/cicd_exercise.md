@@ -1,4 +1,4 @@
-# Day 5 — Exercise: DeepEval in CI/CD
+# Exercise: DeepEval in CI/CD
 
 **Estimated time:** 40–50 minutes
 
@@ -8,7 +8,7 @@
 
 1. Copy the provided workflow:
    ```bash
-   cp module-04-deepeval-llm-testing/examples/day5_ci/llm-eval.yml \
+   cp module-04-deepeval-llm-testing/examples/ci_integration/llm-eval.yml \
       .github/workflows/llm-eval.yml
    ```
 

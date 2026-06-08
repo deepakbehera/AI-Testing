@@ -16,7 +16,7 @@ Two passes for comparison:
 
 Run:
     ollama serve
-    python examples/day3_context_window.py
+    python examples/context_window.py
 """
 
 import os

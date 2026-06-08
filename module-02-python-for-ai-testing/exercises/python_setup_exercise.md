@@ -1,4 +1,4 @@
-# Day 1 — Exercise: Python Setup & Syntax
+# Exercise: Python Setup & Syntax
 
 **Estimated time:** 30–45 minutes
 
@@ -14,14 +14,14 @@
    source .venv/bin/activate    # Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
-3. Run the notebook: open `examples/day1_python_quickstart.ipynb` in Jupyter or VS Code and run all cells.
+3. Run the notebook: open `examples/python_quickstart.ipynb` in Jupyter or VS Code and run all cells.
 4. Confirm all cells execute without errors.
 
 ---
 
 ## Part B — Coding Tasks (20–25 min)
 
-Create a file `exercises/day1_solution.py` with the following:
+Create a file `exercises/python_setup_solution.py` with the following:
 
 ### Task 1 — Prompt Classifier
 
@@ -96,4 +96,4 @@ Add a `classify_sentiment_simple(prompt: str) -> str` function that returns `"po
 - [ ] You understand what each line of your code does
 
 ## Share
-Post `day1_solution.py` in the class channel before Day 2, plus one question you had while writing it.
+Post `python_setup_solution.py` in the class channel before Day 2, plus one question you had while writing it.

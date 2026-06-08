@@ -1,4 +1,4 @@
-# Day 4 — Exercise: API Testing with Python
+# Exercise: API Testing with Python
 
 **Estimated time:** 40–50 minutes
 
@@ -6,12 +6,12 @@
 
 ## Part A — Multi-Provider CLI (20 min)
 
-Create `exercises/day4_solution.py` — a command-line tool to test any LLM API.
+Create `exercises/api_testing_solution.py` — a command-line tool to test any LLM API.
 
 The script accepts arguments via `sys.argv` or `argparse`:
 ```
-python day4_solution.py --provider ollama --model llama3.2:3b --prompt "What is RAG?"
-python day4_solution.py --provider openai  --model gpt-4o-mini  --prompt "What is RAG?"
+python api_testing_solution.py --provider ollama --model llama3.2:3b --prompt "What is RAG?"
+python api_testing_solution.py --provider openai  --model gpt-4o-mini  --prompt "What is RAG?"
 ```
 
 It must:

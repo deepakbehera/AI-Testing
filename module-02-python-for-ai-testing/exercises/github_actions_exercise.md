@@ -1,4 +1,4 @@
-# Day 7 — Exercise: GitHub Actions CI/CD
+# Exercise: GitHub Actions CI/CD
 
 **Estimated time:** 40–50 minutes
 
@@ -13,7 +13,7 @@
 
 2. Copy the provided workflow file:
    ```bash
-   cp module-02-python-for-ai-testing/examples/day7_github_actions/llm-tests.yml \
+   cp module-02-python-for-ai-testing/examples/github_actions/llm-tests.yml \
       .github/workflows/llm-tests.yml
    ```
 

@@ -1,4 +1,4 @@
-# Day 5 — Exercise: Introduction to pytest
+# Exercise: Introduction to pytest
 
 **Estimated time:** 40–50 minutes
 
@@ -24,7 +24,7 @@ Use fixtures where setup is shared (e.g., a `sample_config` fixture). Use `pytes
 
 ## Part B — LLM Test Suite (20 min)
 
-Create `exercises/test_day5_llm.py` — tests that make real model calls.
+Create `exercises/test_llm.py` — tests that make real model calls.
 
 **Session-scoped fixture:** `llm_client` → returns an OpenAI-compatible client.
 
@@ -42,7 +42,7 @@ Create `exercises/test_day5_llm.py` — tests that make real model calls.
 
 ## Part C — Markers & Reports (10 min)
 
-1. Add `@pytest.mark.slow` to all LLM tests in `test_day5_llm.py`.
+1. Add `@pytest.mark.slow` to all LLM tests in `test_llm.py`.
 2. Create a `pytest.ini` in the `exercises/` folder:
    ```ini
    [pytest]
@@ -50,15 +50,15 @@ Create `exercises/test_day5_llm.py` — tests that make real model calls.
        slow: marks tests that make real LLM calls
    ```
 3. Run: `pytest test_day5.py -v` (fast, no LLM calls)
-4. Run: `pytest test_day5_llm.py -v -m slow` (LLM tests only)
-5. Generate HTML report: `pytest -v --html=day5_report.html --self-contained-html`
+4. Run: `pytest test_llm.py -v -m slow` (LLM tests only)
+5. Generate HTML report: `pytest -v --html=pytest_report.html --self-contained-html`
 
 ---
 
 ## Self-Check
 
 - [ ] `pytest test_day5.py -v` shows ≥ 8 tests, all green
-- [ ] `pytest test_day5_llm.py -v` shows ≥ 4 tests (may have some FAIL — that's OK, explain why)
+- [ ] `pytest test_llm.py -v` shows ≥ 4 tests (may have some FAIL — that's OK, explain why)
 - [ ] At least one test uses `pytest.raises`
 - [ ] At least two tests use `@pytest.mark.parametrize`
 - [ ] HTML report opens in a browser and shows pass/fail per test

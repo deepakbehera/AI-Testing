@@ -53,7 +53,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run pytest with HTML report
-        working-directory: module-02-python-for-ai-testing/examples/day6_framework
+        working-directory: module-02-python-for-ai-testing/examples/test_framework
         run: |
           pytest -v \
             --html=report.html \
@@ -65,7 +65,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pytest-html-report
-          path: module-02-python-for-ai-testing/examples/day6_framework/report.html
+          path: module-02-python-for-ai-testing/examples/test_framework/report.html
           retention-days: 30
 
       - name: Upload JUnit XML
@@ -73,11 +73,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pytest-junit-xml
-          path: module-02-python-for-ai-testing/examples/day6_framework/junit.xml
+          path: module-02-python-for-ai-testing/examples/test_framework/junit.xml
           retention-days: 30
 
       - name: Publish test results in the Actions UI
         if: always()
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
-          files: module-02-python-for-ai-testing/examples/day6_framework/junit.xml
+          files: module-02-python-for-ai-testing/examples/test_framework/junit.xml

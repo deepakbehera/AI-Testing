@@ -47,7 +47,7 @@ ollama pull llama3.2:3b
 ollama list                         # verify
 
 # 3. Python env + deps
-cd day-00-demo
+cd intro-demo
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt

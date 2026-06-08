@@ -1,10 +1,10 @@
-# Day 6 — Mini Test Framework
+# Mini Test Framework
 
 A small but complete pytest project structure. This is the shape every team's
 AI test suite eventually takes.
 
 ```
-day6_framework/
+test_framework/
 ├── conftest.py                 # shared fixtures: llm_client, golden_prompts, assert_response
 ├── data/
 │   └── golden_prompts.json     # the test dataset
@@ -25,7 +25,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 # Back into the framework folder
-cd examples/day6_framework
+cd examples/test_framework
 
 # All tests
 pytest -v
@@ -51,7 +51,7 @@ pytest -v -k "refusal"
 
 ## Extend
 
-Exercise ideas (see `exercises/day6_exercise.md`):
+Exercise ideas (see `exercises/test_framework_exercise.md`):
 1. Add a test module `test_formatting.py` checking that responses don't contain Markdown code fences.
 2. Add a new case to `golden_prompts.json` and watch it appear in the run.
 3. Add a session-scoped fixture that opens a log file and writes every prompt/response pair into it.

@@ -1,4 +1,4 @@
-# Day 3 — Exercise: Golden Datasets & EvaluationDataset
+# Exercise: Golden Datasets & EvaluationDataset
 
 **Estimated time:** 40–50 minutes
 
@@ -40,7 +40,7 @@ Use this schema:
 
 ## Part B — Load and Evaluate (15 min)
 
-Write `exercises/test_day3_dataset.py`:
+Write `exercises/test_dataset.py`:
 
 ```python
 import json
@@ -66,7 +66,7 @@ def test_golden(case):
     assert_test(case, metrics)
 ```
 
-Run: `pytest exercises/test_day3_dataset.py -v --tb=short`
+Run: `pytest exercises/test_dataset.py -v --tb=short`
 
 Which cases fail? Document them in a comment — are the failures expected (bad `actual_output` you designed to fail)?
 

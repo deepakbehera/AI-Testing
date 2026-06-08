@@ -1,4 +1,4 @@
-# Day 3 — Exercise
+# Exercise: Red Teaming Basics
 
 Estimated time: 30–40 minutes
 
@@ -24,11 +24,11 @@ Write 5–7 sentences describing:
 2. What it should NEVER do
 3. Which OWASP LLM Top 10 categories are most relevant for this application (pick at least 3)
 
-Put this in `exercises/day3_threat_model.md`.
+Put this in `exercises/redteam_threat_model.md`.
 
 ### Part B — Probe Suite (20–25 min)
 
-Create `exercises/day3_probe_suite.py`. For each of your 3 OWASP categories, write at least 2 attack prompts and define a pass/fail criterion:
+Create `exercises/redteam_probe_suite.py`. For each of your 3 OWASP categories, write at least 2 attack prompts and define a pass/fail criterion:
 
 ```python
 PROBES = [
@@ -57,15 +57,15 @@ Wire up a loop that:
 
 ### Part C — Findings (5 min)
 
-After running your suite, note in `exercises/day3_findings.md`:
+After running your suite, note in `exercises/redteam_findings.md`:
 - Which probes failed?
 - What would you change in the system prompt to improve the result?
 - Which OWASP category was hardest to probe with a simple prompt?
 
 ## Self-check
 
-- [ ] `day3_threat_model.md` describes the application and lists ≥3 OWASP categories
-- [ ] `day3_probe_suite.py` has ≥6 probes across ≥3 categories
+- [ ] `redteam_threat_model.md` describes the application and lists ≥3 OWASP categories
+- [ ] `redteam_probe_suite.py` has ≥6 probes across ≥3 categories
 - [ ] The loop runs without errors and prints PASS/FAIL per probe
-- [ ] `day3_findings.md` has at least one concrete mitigation suggestion
+- [ ] `redteam_findings.md` has at least one concrete mitigation suggestion
 - [ ] You can explain why "the model refused" is NOT always a PASS (it depends on the use case)

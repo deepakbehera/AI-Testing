@@ -50,12 +50,12 @@ Initialize weights → Forward pass → Compute loss → Backpropagate and updat
 A single number that measures how wrong the model is. Training = minimize this number. Common forms: MSE (regression), Cross-Entropy (classification), Perplexity (language).
 
 ### Demo you'll see
-- **`day1_learned_behavior.py`** — one model handles math, a haiku, a code review, and a weird cooking-style explanation of microservices. No rule-writing. This is what "learned" actually means.
+- **`learned_behavior.py`** — one model handles math, a haiku, a code review, and a weird cooking-style explanation of microservices. No rule-writing. This is what "learned" actually means.
 
 ### Try it yourself (between Day 1 and Day 2)
 ```bash
 cd module-01-intro-to-ai-llms
-python examples/day1_learned_behavior.py
+python examples/learned_behavior.py
 ```
 Then swap in your own tasks in `TASKS`. Try to find one the model fails at — and ask yourself why.
 
@@ -104,12 +104,12 @@ The foundation of every modern LLM (GPT, Claude, Llama, Gemini). Two superpowers
 - **Parallel processing** — whole sequences run at once, not token-by-token.
 
 ### Demo you'll see
-- **`day2_token_sensitivity.py`** — "Explain Artificial Intelligence in simple terms" vs "Explain AI simply". We view the tokenizer output for both prompts (via `tiktoken`) and then stream both model responses to see how differently the model answers what is, to a human, the same question.
+- **`token_sensitivity.py`** — "Explain Artificial Intelligence in simple terms" vs "Explain AI simply". We view the tokenizer output for both prompts (via `tiktoken`) and then stream both model responses to see how differently the model answers what is, to a human, the same question.
 
 ### Try it yourself
 ```bash
 pip install tiktoken
-python examples/day2_token_sensitivity.py
+python examples/token_sensitivity.py
 ```
 Then open [https://platform.openai.com/tokenizer](https://platform.openai.com/tokenizer) and paste in your own sentences. Notice how spacing, punctuation, and capitalization change the token count.
 
@@ -162,24 +162,24 @@ Training data reflects the internet. The internet reflects humanity. RLHF adds a
 - Occasional upstream provider changes
 
 ### Demos you'll see
-- **`day3_attention_pronoun.py`** — "The trophy didn't fit in the suitcase because it was too BIG / SMALL." One word flips what "it" means. Self-attention in action.
-- **`day3_next_token_probs.py`** — top-5 probability distribution for "The capital of France is ___" using `logprobs`. Makes the probability-not-knowledge idea tangible.
-- **`day3_temperature_effect.py`** — same prompt, run at `temp=0.2` three times and `temp=1.2` three times. Watch the spread collapse and expand.
-- **`day3_context_window.py`** — plant a fact, bury it in filler, then ask the model to recall it. With `num_ctx=512` the fact falls out; with `num_ctx=4096` it stays.
+- **`attention_pronoun.py`** — "The trophy didn't fit in the suitcase because it was too BIG / SMALL." One word flips what "it" means. Self-attention in action.
+- **`next_token_probs.py`** — top-5 probability distribution for "The capital of France is ___" using `logprobs`. Makes the probability-not-knowledge idea tangible.
+- **`temperature_effect.py`** — same prompt, run at `temp=0.2` three times and `temp=1.2` three times. Watch the spread collapse and expand.
+- **`context_window.py`** — plant a fact, bury it in filler, then ask the model to recall it. With `num_ctx=512` the fact falls out; with `num_ctx=4096` it stays.
 
 ### Try it yourself
 ```bash
 # Attention demo (works on Ollama)
-python examples/day3_attention_pronoun.py
+python examples/attention_pronoun.py
 
 # Temperature demo
-python examples/day3_temperature_effect.py
+python examples/temperature_effect.py
 
 # Context overflow (Ollama)
-python examples/day3_context_window.py
+python examples/context_window.py
 
 # Next-token probabilities — switch to OpenAI for best results
-PROVIDER=openai python examples/day3_next_token_probs.py
+PROVIDER=openai python examples/next_token_probs.py
 ```
 
 ### Key takeaways

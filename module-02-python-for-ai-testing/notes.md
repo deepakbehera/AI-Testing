@@ -145,10 +145,10 @@ cd module-02-python-for-ai-testing
 python3 -m venv .venv
 source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-jupyter notebook examples/day1_python_quickstart.ipynb
+jupyter notebook examples/python_quickstart.ipynb
 ```
 
-Exercise: [`exercises/day1_exercise.md`](exercises/day1_exercise.md)
+Exercise: [`exercises/python_setup_exercise.md`](exercises/python_setup_exercise.md)
 
 ---
 
@@ -288,7 +288,7 @@ def evaluate_case(case: dict, response: str) -> tuple[bool, list[str]]:
     return len(failures) == 0, failures
 ```
 
-Exercise: [`exercises/day2_exercise.md`](exercises/day2_exercise.md)
+Exercise: [`exercises/data_structures_json_exercise.md`](exercises/data_structures_json_exercise.md)
 
 ---
 
@@ -399,7 +399,7 @@ def call_api(prompt: str) -> str:
 - `ValueError` — your code is wrong; retrying won't fix it
 - `json.JSONDecodeError` — bad response shape; retry may just produce the same bad output
 
-Exercise: [`exercises/day3_exercise.md`](exercises/day3_exercise.md)
+Exercise: [`exercises/robust_code_exercise.md`](exercises/robust_code_exercise.md)
 
 ---
 
@@ -558,7 +558,7 @@ def assert_response(resp: LLMResponse,
     return len(failures) == 0, failures
 ```
 
-Exercise: [`exercises/day4_exercise.md`](exercises/day4_exercise.md)
+Exercise: [`exercises/api_testing_exercise.md`](exercises/api_testing_exercise.md)
 
 ---
 
@@ -687,7 +687,7 @@ def test_basic():
 !pytest test_example.py -v
 ```
 
-Exercise: [`exercises/day5_exercise.md`](exercises/day5_exercise.md)
+Exercise: [`exercises/pytest_intro_exercise.md`](exercises/pytest_intro_exercise.md)
 
 ---
 
@@ -705,7 +705,7 @@ Exercise: [`exercises/day5_exercise.md`](exercises/day5_exercise.md)
 **Project structure.**
 
 ```
-day6_framework/
+test_framework/
 ├── conftest.py              ← shared fixtures (pytest auto-discovers)
 ├── data/
 │   └── golden_prompts.json  ← test cases as data, not as code
@@ -797,7 +797,7 @@ pytest -v --html=report.html --self-contained-html --tb=short
 
 `--self-contained-html` embeds CSS/JS so the file is fully portable — email it, no broken links.
 
-Exercise: [`exercises/day6_exercise.md`](exercises/day6_exercise.md)
+Exercise: [`exercises/test_framework_exercise.md`](exercises/test_framework_exercise.md)
 
 ---
 
@@ -853,7 +853,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          cd module-02-python-for-ai-testing/examples/day6_framework
+          cd module-02-python-for-ai-testing/examples/test_framework
           pytest -v --html=report.html --self-contained-html
 
       - uses: actions/upload-artifact@v4   # save report for 90 days
@@ -902,7 +902,7 @@ Now: push to `main` directly is still allowed, but a PR that fails CI cannot be 
  └───────── minute (0 = top of hour)
 ```
 
-Exercise: [`exercises/day7_exercise.md`](exercises/day7_exercise.md)
+Exercise: [`exercises/github_actions_exercise.md`](exercises/github_actions_exercise.md)
 
 ---
 

@@ -1,4 +1,4 @@
-# Day 2 — Exercise: Core Metrics Suite
+# Exercise: Core Metrics Suite
 
 **Estimated time:** 40–50 minutes
 

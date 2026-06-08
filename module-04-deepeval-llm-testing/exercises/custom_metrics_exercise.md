@@ -1,4 +1,4 @@
-# Day 4 — Exercise: GEval & Custom Metrics
+# Exercise: GEval & Custom Metrics
 
 **Estimated time:** 40–50 minutes
 
@@ -21,7 +21,7 @@ For each `GEval`, write a test case that:
 - PASSES the metric (craft an ideal response)
 - FAILS the metric (craft a response that violates the criterion)
 
-Run: `pytest exercises/test_day4_geval.py -v`
+Run: `pytest exercises/test_geval.py -v`
 
 ---
 

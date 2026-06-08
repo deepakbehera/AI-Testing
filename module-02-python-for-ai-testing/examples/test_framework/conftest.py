@@ -18,7 +18,7 @@ load_dotenv()
 # Make the Day 4 client importable from this sub-project
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from day4_api_client import LLMClient
+from api_client import LLMClient
 
 
 # ─────────────────────────────────────────────────────────────────────
