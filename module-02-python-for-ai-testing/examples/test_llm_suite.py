@@ -9,6 +9,7 @@ PROVIDER = os.getenv("PROVIDER", "ollama")
 MODEL    = os.getenv("DEMO_MODEL", "llama3.2:3b")
 
 
+print(PROVIDER, MODEL)
 # ── Session-scoped client (created once, shared across all tests) ─────────────
 @pytest.fixture(scope="session")
 def client() -> OpenAI:
