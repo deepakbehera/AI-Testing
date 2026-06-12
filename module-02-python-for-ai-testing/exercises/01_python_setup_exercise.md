@@ -14,7 +14,7 @@
    source .venv/bin/activate    # Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
-3. Run the notebook: open `examples/python_quickstart.ipynb` in Jupyter or VS Code and run all cells.
+3. Run the notebook: open `examples/01_python_quickstart.ipynb` in Jupyter or VS Code and run all cells.
 4. Confirm all cells execute without errors.
 
 ---

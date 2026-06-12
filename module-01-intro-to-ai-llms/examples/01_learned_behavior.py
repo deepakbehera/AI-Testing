@@ -8,7 +8,7 @@ handle four wildly different tasks. No `if/else` could cover this.
 
 Run:
     ollama serve
-    python examples/learned_behavior.py
+    python examples/01_learned_behavior.py
 """
 
 import os

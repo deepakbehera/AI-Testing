@@ -13,10 +13,10 @@ comparison. Jaccard is good enough to illustrate the concept without extra deps.
 
 Run:
     # with Ollama (default)
-    python examples/determinism_probe.py
+    python examples/01_determinism_probe.py
 
     # with OpenAI
-    PROVIDER=openai python examples/determinism_probe.py
+    PROVIDER=openai python examples/01_determinism_probe.py
 """
 
 import logging

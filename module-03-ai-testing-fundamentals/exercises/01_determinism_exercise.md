@@ -8,7 +8,7 @@ Make non-determinism visible and measurable in your own test environment.
 
 ## Tasks
 
-1. **Run the probe.** Execute `python examples/determinism_probe.py`. Record the token-overlap scores printed at the end.
+1. **Run the probe.** Execute `python examples/01_determinism_probe.py`. Record the token-overlap scores printed at the end.
 
 2. **Increase the sample size.** Open the script and change `RUNS = 5` to `RUNS = 10`. Re-run. Does the minimum score drop? Does the average shift?
 

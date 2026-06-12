@@ -28,7 +28,7 @@ Open `test_framework/data/golden_prompts.json`. Add **8 new test cases** — at 
 
 **Run the suite** and confirm all new cases appear in the output:
 ```bash
-cd test_framework && pytest -v
+cd 06_test_framework && pytest -v
 ```
 
 ---
@@ -77,7 +77,7 @@ def test_latency_within_budget(prompt, max_ms, llm_client):
 
 1. Run the full suite with parallel execution and generate a report:
    ```bash
-   cd test_framework
+   cd 06_test_framework
    pytest -n auto -v --html=full_report.html --self-contained-html --tb=short
    ```
 2. Open `full_report.html`. Take a screenshot or note:

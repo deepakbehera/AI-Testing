@@ -5,7 +5,7 @@
 1. Copy [`llm-tests.yml`](llm-tests.yml) to `.github/workflows/llm-tests.yml` at the repo root:
    ```bash
    mkdir -p .github/workflows
-   cp module-02-python-for-ai-testing/examples/github_actions/llm-tests.yml .github/workflows/
+   cp module-02-python-for-ai-testing/examples/07_github_actions/llm-tests.yml .github/workflows/
    ```
 2. Add your API key(s) as repo secrets (GitHub → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**):
    - `OPENAI_API_KEY` (required if `PROVIDER=openai`)

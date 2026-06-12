@@ -9,7 +9,7 @@ so students can see the spread collapse and expand.
 
 Run:
     ollama serve
-    python examples/temperature_effect.py
+    python examples/03_temperature_effect.py
 """
 
 import os

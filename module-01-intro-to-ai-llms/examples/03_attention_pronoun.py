@@ -7,7 +7,7 @@ lets the transformer dynamically resolve this.
 
 Run:
     ollama serve
-    python examples/attention_pronoun.py
+    python examples/03_attention_pronoun.py
 """
 
 import os

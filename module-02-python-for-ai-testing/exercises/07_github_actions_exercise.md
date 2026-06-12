@@ -13,7 +13,7 @@
 
 2. Copy the provided workflow file:
    ```bash
-   cp module-02-python-for-ai-testing/examples/github_actions/llm-tests.yml \
+   cp module-02-python-for-ai-testing/examples/07_github_actions/llm-tests.yml \
       .github/workflows/llm-tests.yml
    ```
 

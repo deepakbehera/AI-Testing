@@ -17,8 +17,8 @@ When it passes: you understand what you're looking for.
 When it fails: you have a real finding.
 
 Run:
-    python examples/failure_modes.py
-    PROVIDER=openai python examples/failure_modes.py
+    python examples/02_failure_modes.py
+    PROVIDER=openai python examples/02_failure_modes.py
 """
 
 import logging

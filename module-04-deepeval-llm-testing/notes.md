@@ -119,9 +119,9 @@ The judge's score becomes the metric score. This is why:
 - Use a stronger judge than the model being tested when possible
 
 ### Demo you'll see
-**`examples/deepeval_intro.ipynb`** — setup, first `LLMTestCase`, `AnswerRelevancyMetric`, reading scores and reasons.
+**`examples/01_deepeval_intro.ipynb`** — setup, first `LLMTestCase`, `AnswerRelevancyMetric`, reading scores and reasons.
 
-Exercise: [`exercises/deepeval_intro_exercise.md`](exercises/deepeval_intro_exercise.md)
+Exercise: [`exercises/01_deepeval_intro_exercise.md`](exercises/01_deepeval_intro_exercise.md)
 
 ---
 
@@ -221,9 +221,9 @@ print(metric.reason)
 ```
 
 ### Demo you'll see
-**`examples/metrics_deep_dive.ipynb`**
+**`examples/02_metrics_deep_dive.ipynb`**
 
-Exercise: [`exercises/core_metrics_exercise.md`](exercises/core_metrics_exercise.md)
+Exercise: [`exercises/02_core_metrics_exercise.md`](exercises/02_core_metrics_exercise.md)
 
 ---
 
@@ -305,9 +305,9 @@ def test_golden(case):
 ```
 
 ### Demo you'll see
-**`examples/golden_datasets.ipynb`**
+**`examples/03_golden_datasets.ipynb`**
 
-Exercise: [`exercises/golden_datasets_exercise.md`](exercises/golden_datasets_exercise.md)
+Exercise: [`exercises/03_golden_datasets_exercise.md`](exercises/03_golden_datasets_exercise.md)
 
 ---
 
@@ -397,9 +397,9 @@ metric = LatencyMetric(max_seconds=5.0)
 ```
 
 ### Demo you'll see
-**`examples/custom_metrics.ipynb`**
+**`examples/04_custom_metrics.ipynb`**
 
-Exercise: [`exercises/custom_metrics_exercise.md`](exercises/custom_metrics_exercise.md)
+Exercise: [`exercises/04_custom_metrics_exercise.md`](exercises/04_custom_metrics_exercise.md)
 
 ---
 
@@ -472,9 +472,9 @@ schedule:
 Run the full eval suite weekly to detect **model drift** — degradation in quality without any code change (e.g., OpenAI silently updated a model).
 
 ### Demo you'll see
-**`examples/deepeval_ci.ipynb`** + **`examples/ci_integration/llm-eval.yml`**
+**`examples/deepeval_ci.ipynb`** + **`examples/05_ci_integration/llm-eval.yml`**
 
-Exercise: [`exercises/cicd_exercise.md`](exercises/cicd_exercise.md)
+Exercise: [`exercises/05_cicd_exercise.md`](exercises/05_cicd_exercise.md)
 
 ---
 

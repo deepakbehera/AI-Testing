@@ -86,7 +86,7 @@ Call an LLM, parse its JSON response, and validate it.
 
 ## Tasks
 
-1. **Copy and modify** `examples/json_parsing.py` into `exercises/data_structures_my_parser.py`.
+1. **Copy and modify** `examples/02_json_parsing.ipynb` into `exercises/data_structures_my_parser.py`.
 2. **Change the prompt** to ask for a **restaurant menu item**. It should return JSON with keys:
    - `name` (string)
    - `price_usd` (number)

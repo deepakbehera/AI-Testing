@@ -8,7 +8,7 @@
 
 1. Copy the provided workflow:
    ```bash
-   cp module-04-deepeval-llm-testing/examples/ci_integration/llm-eval.yml \
+   cp module-04-deepeval-llm-testing/examples/05_ci_integration/llm-eval.yml \
       .github/workflows/llm-eval.yml
    ```
 

@@ -55,7 +55,7 @@ A single number that measures how wrong the model is. Training = minimize this n
 ### Try it yourself (between Day 1 and Day 2)
 ```bash
 cd module-01-intro-to-ai-llms
-python examples/learned_behavior.py
+python examples/01_learned_behavior.py
 ```
 Then swap in your own tasks in `TASKS`. Try to find one the model fails at — and ask yourself why.
 
@@ -109,7 +109,7 @@ The foundation of every modern LLM (GPT, Claude, Llama, Gemini). Two superpowers
 ### Try it yourself
 ```bash
 pip install tiktoken
-python examples/token_sensitivity.py
+python examples/02_token_sensitivity.py
 ```
 Then open [https://platform.openai.com/tokenizer](https://platform.openai.com/tokenizer) and paste in your own sentences. Notice how spacing, punctuation, and capitalization change the token count.
 
@@ -170,16 +170,16 @@ Training data reflects the internet. The internet reflects humanity. RLHF adds a
 ### Try it yourself
 ```bash
 # Attention demo (works on Ollama)
-python examples/attention_pronoun.py
+python examples/03_attention_pronoun.py
 
 # Temperature demo
-python examples/temperature_effect.py
+python examples/03_temperature_effect.py
 
 # Context overflow (Ollama)
-python examples/context_window.py
+python examples/03_context_window.py
 
 # Next-token probabilities — switch to OpenAI for best results
-PROVIDER=openai python examples/next_token_probs.py
+PROVIDER=openai python examples/03_next_token_probs.py
 ```
 
 ### Key takeaways
