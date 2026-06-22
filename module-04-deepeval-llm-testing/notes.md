@@ -1,21 +1,22 @@
 # Module 4 — LLM Testing with DeepEval
 
-**Duration:** 5 hours · split across **5 online sessions of 1 hour each**
+**Duration:** 6 hours · split across **6 online sessions of 1 hour each**
 **Prerequisites:** Module 2 (pytest, fixtures, parametrize) · Module 3 (AI failure modes, OWASP LLM Top 10)
 
-By the end of this module you will have a full DeepEval test suite that measures hallucination, faithfulness, correctness, toxicity, and bias — running automatically in GitHub Actions on every pull request.
+By the end of this module you will have a full DeepEval test suite that measures hallucination, faithfulness, correctness, toxicity, and bias — running automatically in GitHub Actions on every pull request. Just as importantly, you'll know *how to decide what to test in the first place* — Day 4 is dedicated entirely to that, so the dataset you build on Day 3 gets audited and extended with deliberate, not accidental, coverage.
 
 ---
 
-## How the 5 sessions are organized
+## How the 6 sessions are organized
 
 | Day | Focus | What you'll build |
 |---|---|---|
 | **1** | DeepEval intro — `LLMTestCase`, first metric | Your first passing DeepEval test |
 | **2** | Core metrics deep dive | A suite covering 5 failure modes |
 | **3** | Golden datasets & `EvaluationDataset` | A reusable eval dataset with 15+ cases |
-| **4** | `GEval` & custom metrics | Criteria-driven evaluation + latency gate |
-| **5** | DeepEval in CI | Automated eval pipeline that gates merges |
+| **4** | The testing mindset — test design & coverage | A coverage matrix + 8 adversarial variants from 1 seed case |
+| **5** | `GEval` & custom metrics | Criteria-driven evaluation + latency gate |
+| **6** | DeepEval in CI | Automated eval pipeline that gates merges |
 
 ---
 
@@ -311,7 +312,63 @@ Exercise: [`exercises/03_golden_datasets_exercise.md`](exercises/03_golden_datas
 
 ---
 
-## DAY 4 — `GEval` & Custom Metrics (60 min)
+## DAY 4 — The Testing Mindset (60 min)
+
+### Learning objectives
+- Explain why a "happy path only" dataset gives a false sense of confidence
+- Name 8 distinct types of testing for LLM systems and when each applies
+- Apply equivalence partitioning and boundary value analysis to prompts and context
+- Build a coverage matrix mapping capabilities to Module 3's failure modes
+- Turn one seed test case into 8 targeted adversarial variants
+- Design a "hard negative" case and explain why a dataset needs at least one
+
+### Why this day exists
+
+Day 3 had you build a real `golden_eval.json` by hand. Without a deliberate design process behind it, a golden dataset drifts toward whatever is easiest to write: well-formed questions the model is obviously good at. That produces a high pass rate and very little signal. Today gives you the process to audit and extend what you already built.
+
+> **Plain English:** giving someone a stopwatch doesn't make them a good race official if they don't know where to put the finish line. Day 1-3 gave you the stopwatch (metrics, a dataset). Today is about where to put the finish line.
+
+### Types of testing for an LLM system
+
+| Type | Question it answers | Where it's covered |
+|---|---|---|
+| Functional / happy-path | Does it work when everything goes right? | Day 1-3 |
+| Edge-case / boundary | Does it work at the limits of valid input? | Today |
+| Adversarial / red-team | Can it be made to misbehave on purpose? | Module 3 Day 3 |
+| Metamorphic / consistency | Does meaning-preserving rephrasing change the answer? | Module 3 Day 1 |
+| Differential | Does this version differ from the last one? | Module 8 |
+| Regression | Did a change break something that used to work? | Day 3, Day 6 |
+| Safety / fairness | Does behavior change unfairly or unsafely under pressure? | Module 3 Day 2-3 |
+| Load / latency | Does it respond acceptably under real-world timing? | Day 5 |
+
+### Equivalence partitioning & boundary value analysis
+
+Group prompts into classes (input length, context availability, question structure, language/formality, domain fit) and test one representative per class — then specifically test the *edges* of each class, since bugs cluster there (the token-budget boundary, "just enough context" vs. "missing the one needed sentence", the line a refusal policy draws).
+
+### The coverage matrix
+
+A simple table: rows are capabilities/scenarios, columns are Module 3's failure modes, cells are case counts. The point isn't 100% density — it's making silent gaps on high-risk intersections visible instead of accidental.
+
+### Seed case → 8 variants
+
+Given one happy-path case, systematically mutate it: paraphrase, negation, distractor context, missing context, contradictory context, adversarial framing, format stress, out-of-scope. This is the fastest way to turn 1 case into a coverage cluster, and it reuses Module 3's red-team thinking at the dataset-design stage instead of as a one-off probe.
+
+### Hard negatives
+
+A case deliberately built so the *correct* behavior is for it to fail a metric (e.g., a faithfulness check on a response with a fabricated number). If your dataset has zero of these, you can't tell "the model is great" apart from "the metric can't detect failure" — the same logic as mutation testing in traditional software QA.
+
+### Annotating the golden dataset schema
+
+Add `category`, `failure_mode`, and `is_hard_negative` fields to dataset rows on top of Day 3's base schema. They're inert to `LLMTestCase`/`EvaluationDataset` (extra keys are ignored) but let a script regenerate the coverage matrix straight from the dataset file. Go back and retrofit Day 3's `golden_eval.json` with them.
+
+### Demo you'll see
+**`examples/04_testing_mindset.ipynb`**
+
+Exercise: [`exercises/04_testing_mindset_exercise.md`](exercises/04_testing_mindset_exercise.md)
+
+---
+
+## DAY 5 — `GEval` & Custom Metrics (60 min)
 
 ### Learning objectives
 - Write evaluation criteria in plain English with `GEval`
@@ -397,13 +454,13 @@ metric = LatencyMetric(max_seconds=5.0)
 ```
 
 ### Demo you'll see
-**`examples/04_custom_metrics.ipynb`**
+**`examples/05_custom_metrics.ipynb`**
 
-Exercise: [`exercises/04_custom_metrics_exercise.md`](exercises/04_custom_metrics_exercise.md)
+Exercise: [`exercises/05_custom_metrics_exercise.md`](exercises/05_custom_metrics_exercise.md)
 
 ---
 
-## DAY 5 — DeepEval in CI/CD (60 min)
+## DAY 6 — DeepEval in CI/CD (60 min)
 
 ### Learning objectives
 - Write a GitHub Actions workflow that runs DeepEval evals on every push
@@ -472,9 +529,9 @@ schedule:
 Run the full eval suite weekly to detect **model drift** — degradation in quality without any code change (e.g., OpenAI silently updated a model).
 
 ### Demo you'll see
-**`examples/deepeval_ci.ipynb`** + **`examples/05_ci_integration/llm-eval.yml`**
+**`examples/06_ci_integration/llm-eval.yml`**
 
-Exercise: [`exercises/05_cicd_exercise.md`](exercises/05_cicd_exercise.md)
+Exercise: [`exercises/06_cicd_exercise.md`](exercises/06_cicd_exercise.md)
 
 ---
 
@@ -510,3 +567,9 @@ You now have a framework that evaluates LLM responses on relevancy, faithfulness
 | **Synthesizer** | Auto-generates test cases from docs | The test data factory |
 | **Judge model** | LLM used to evaluate responses | The examiner |
 | **Gating** | Blocking merges on failing evals | The CI bouncer |
+| **Equivalence partitioning** | Grouping inputs into classes expected to behave alike | Testing one student per class instead of every student |
+| **Boundary value analysis** | Testing the edges of an equivalence class, not the middle | Checking the pothole at the edge of the road, not the smooth center |
+| **Coverage matrix** | Table of capability × failure mode, cells = test case counts | A checklist that shows which combinations you forgot to test |
+| **Hard negative** | A case deliberately built to fail a metric | A planted bug to prove your smoke detector actually works |
+| **Metamorphic testing** | Checking that meaning-preserving input changes don't change the verdict | Asking the same question 5 ways and expecting 5 consistent answers |
+| **Differential testing** | Comparing outputs of two versions on the same inputs | Diffing model v1 vs v2 like a code diff |

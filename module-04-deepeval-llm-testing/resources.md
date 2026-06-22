@@ -40,6 +40,17 @@
 
 ---
 
+## Test Design & The Testing Mindset (Day 4)
+
+- *Software Testing Techniques* (Boris Beizer, 2nd ed., 1990) — the classic reference for equivalence partitioning and boundary value analysis; the techniques Day 4 adapts for prompts
+- [Beyond Accuracy: Behavioral Testing of NLP Models with CheckList (Ribeiro et al., ACL 2020)](https://arxiv.org/abs/2005.04118) — a taxonomy of test types (Minimum Functionality, Invariance, Directional Expectation) for NLP models; directly informs the mutation families in Day 4
+- [Metamorphic Testing: A New Approach for Generating Next Test Cases](https://arxiv.org/abs/2002.12543) — survey of metamorphic testing, the formal basis for "paraphrase shouldn't change the verdict"
+- [Pairwise Testing / Combinatorial Test Design (Microsoft PICT)](https://github.com/microsoft/pict) — tooling for generating combinatorial coverage of input dimensions, useful once your equivalence partitions multiply
+- *An Analysis and Survey of the Development of Mutation Testing* (Jia & Harman, IEEE Transactions on Software Engineering, 2011) — the "does the test actually fail when it should" principle behind Day 4's hard negatives
+- Module 3 `examples/03_redteam_basics.py` — the adversarial mutation families reused directly in Day 4's `generate_variants()`
+
+---
+
 ## Golden Datasets & Benchmarks
 
 - [MMLU (Massive Multitask Language Understanding)](https://arxiv.org/abs/2009.03300) — 57-subject benchmark; useful for factual recall baselines
