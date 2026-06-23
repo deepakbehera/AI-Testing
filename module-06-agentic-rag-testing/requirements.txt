@@ -1,0 +1,17 @@
+# Module 6 — Agentic RAG Testing
+
+# Core
+python-dotenv>=1.0.0
+pytest>=8.0.0
+pytest-html>=4.1.0
+rich>=13.0.0
+
+# LLM client — optional, only needed if you swap the rule-based planner/retriever
+# stubs in the examples for a real LLM-driven planner
+openai>=1.30.0
+
+# Tracing — same LangSmith pattern from Module 5 Day 3, now tracing multi-hop chains
+langsmith>=0.1.80
+
+# Forward-looking (installed here so Module 7 has them ready)
+# deepeval>=1.4.0       # uncomment when starting Module 7's agent metrics
