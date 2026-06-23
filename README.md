@@ -102,7 +102,7 @@ Each module folder contains:
   - Threat categories: prompt injection, jailbreaks, data leakage, PII, bias elicitation
   - Manual vs automated attacks — when to use each
 
-### Module 4 — LLM Testing with DeepEval (5h)
+### Module 4 — LLM Testing with DeepEval (8h)
 - Introduction to DeepEval
 - Test cases
 - Evaluators
@@ -125,51 +125,28 @@ Each module folder contains:
 - Retrieval correctness
 - Metrics: faithfulness, context precision, context recall, answer relevancy
 
-### Module 6 — Agentic RAG Testing (5h)
-- Multi-step retrieval
-- Planner + executor flows
-- Tool validation
-- Memory testing
-- Multi-hop reasoning validation
-- Failure path testing
+### Module 6 — Agentic RAG Testing (2h)
+- Multi-step retrieval, planner + executor flows
+- Tool and memory validation
+- Multi-hop reasoning and failure-path testing
 
-### Module 7 — AI Agents Testing with DeepEval (5h)
-- Function/tool calling validation
-- Multi-step agent workflows
-- Memory and context validation
-- Tool selection correctness
-- Intermediate reasoning validation
-- Response consistency checks
+### Module 7 — AI Agents Testing with DeepEval (3h)
+- Function/tool calling validation, multi-step agent workflows
+- Memory, context, and tool-selection correctness
 - Agent failure and fallback testing
 - DeepEval metrics: task completion, tool correctness, argument correctness, turn relevancy, conversation completeness
 - **Agent-specific red teaming**
-  - Tool / function-call abuse
-  - Indirect prompt injection via tool outputs
+  - Tool / function-call abuse, indirect prompt injection via tool outputs
   - System-prompt leakage and data exfiltration through agents
-  - Unsafe tool-use probes
 
-### Module 8 — Promptfoo for Prompt & Regression Testing (3h)
-- YAML-based assertions
-- Output validation
-- Multi-model comparison
-- Regression testing
-- Safety prompt checks
-- **Promptfoo `redteam`**
-  - Jailbreak, prompt injection, PII leakage attack packs
-  - Custom red-team configs
-- **Promptfoo in CI**
-  - `promptfoo eval` with pass/fail thresholds (`promptfoo.yml`)
-  - Matrix builds for multi-model comparison
-  - Scheduled red-team runs (`redteam-nightly.yml` via `cron`)
-  - Posting results back to PRs as comments
+### Module 8 — Promptfoo for Prompt & Regression Testing (2h)
+- YAML-based assertions, output validation, multi-model comparison, regression testing
+- **Promptfoo `redteam`** — jailbreak, prompt injection, PII leakage attack packs
+- **Promptfoo in CI** — `promptfoo eval` thresholds, matrix builds, scheduled red-team runs (`cron`)
 
-### Module 9 — Voice Agent Testing (4h)
-- Speech-to-text testing
-- LLM response validation
-- Text-to-speech testing
-- Intent accuracy
-- Latency testing
-- Interruption and fallback testing
+### Module 9 — Voice Agent Testing (2h)
+- Speech-to-text and text-to-speech testing, intent accuracy
+- Latency, interruption, and fallback testing
 
 ## Getting Started
 
