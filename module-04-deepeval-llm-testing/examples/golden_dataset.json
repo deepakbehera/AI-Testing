@@ -1,26 +1,43 @@
 [
   {
-    
+    "id": 1,
+    "category": "LLM Testing",
+    "failure_mode": "hallucination",
     "input": "What is Resources: LLM Testing with DeepEval talking about?",
     "expected_output": "The document provides an overview of resources available for testing Large Language Models using the DeepEval framework, including tools, datasets, and evaluation methodologies."
   },
   {
+    "id": 2,
+    "category": "LLM Testing",
+    "failure_mode": "hallucination",
     "input": "Give me a summary of the document.",
     "expected_output": "The document provides a summary of resources, tools, datasets, and methodologies available for evaluating Large Language Models using DeepEval."
   },
   {
+    "id": 3,
+    "category": "LLM Testing",
+    "failure_mode": "hallucination",
     "input": "What is the main purpose of the document?",
     "expected_output": "The main purpose of the document is to explain resources and approaches for evaluating Large Language Models with DeepEval."
   },
   {
+    "id": 4,
+    "category": "LLM Testing",
+    "failure_mode": "hallucination",
     "input": "Which framework is discussed in the document?",
     "expected_output": "The document discusses the DeepEval framework for testing and evaluating Large Language Models."
   },
   {
+    "id": 5,
+    "category": "LLM Testing",
+    "failure_mode": "hallucination",
     "input": "What resources are available for LLM testing?",
     "expected_output": "The document describes resources such as tools, datasets, and methodologies for testing and evaluating Large Language Models."
   },
   {
+    "id": 6,
+    "category": "LLM Testing",
+    "failure_mode": "hallucination",
     "input": "What tools are mentioned for evaluating LLMs?",
     "expected_output": "The document mentions tools that support the evaluation and testing of Large Language Models within the DeepEval framework."
   },
