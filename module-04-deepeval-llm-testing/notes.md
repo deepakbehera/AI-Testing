@@ -573,3 +573,4 @@ You now have a framework that evaluates LLM responses on relevancy, faithfulness
 | **Hard negative** | A case deliberately built to fail a metric | A planted bug to prove your smoke detector actually works |
 | **Metamorphic testing** | Checking that meaning-preserving input changes don't change the verdict | Asking the same question 5 ways and expecting 5 consistent answers |
 | **Differential testing** | Comparing outputs of two versions on the same inputs | Diffing model v1 vs v2 like a code diff |
+// test edit
