@@ -46,7 +46,7 @@ jobs:
           PROVIDER: azure
           AZURE_OPENAI_ENDPOINT_C: ${{ secrets.AZURE_OPENAI_ENDPOINT_C }}
           AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
-          AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT || 'DeepSeek-V3.2' }}
+          AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT || 'Phi-4-mini-instruct' }}
         run: |
           cd module-04-deepeval-llm-testing/ci
           python generate_eval_dataset.py
@@ -55,8 +55,8 @@ jobs:
         env:
           AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
           AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
-          AZURE_MODEL_NAME: ${{ vars.AZURE_MODEL_NAME || 'DeepSeek-V3.2' }}
-          AZURE_DEPLOYMENT_NAME: ${{ vars.AZURE_DEPLOYMENT_NAME || 'DeepSeek-V3.2' }}
+          AZURE_MODEL_NAME: ${{ vars.AZURE_MODEL_NAME || 'Phi-4-mini-instruct' }}
+          AZURE_DEPLOYMENT_NAME: ${{ vars.AZURE_DEPLOYMENT_NAME || 'Phi-4-mini-instruct' }}
           OPENAI_API_VERSION: ${{ vars.OPENAI_API_VERSION || '2025-01-01-preview' }}
         run: |
           cd module-04-deepeval-llm-testing/ci
@@ -68,8 +68,8 @@ jobs:
         env:
           AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
           AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
-          AZURE_MODEL_NAME: ${{ vars.AZURE_MODEL_NAME || 'DeepSeek-V3.2' }}
-          AZURE_DEPLOYMENT_NAME: ${{ vars.AZURE_DEPLOYMENT_NAME || 'DeepSeek-V3.2' }}
+          AZURE_MODEL_NAME: ${{ vars.AZURE_MODEL_NAME || 'Phi-4-mini-instruct' }}
+          AZURE_DEPLOYMENT_NAME: ${{ vars.AZURE_DEPLOYMENT_NAME || 'Phi-4-mini-instruct' }}
           OPENAI_API_VERSION: ${{ vars.OPENAI_API_VERSION || '2025-01-01-preview' }}
         run: |
           cd module-04-deepeval-llm-testing/ci
