@@ -9,10 +9,14 @@ rich>=13.0.0
 # LLM clients
 openai>=1.30.0
 
-# RAGAS and its LangChain-based LLM/embeddings wrappers
-ragas>=0.2.0
-langchain-openai>=0.1.0
+# RAGAS — notebooks use its native llm_factory/OpenAIEmbeddings (no LangChain
+# wrapping needed for the judge LLM/embeddings).
+# langchain-community is still a transitive ragas dependency: ragas/llms/base.py
+# unconditionally imports langchain_community.chat_models.vertexai, a module that
+# 0.4.0 removed — capped <0.4 so `import ragas` itself doesn't break.
+langchain-community>=0.3.0,<0.4
 datasets>=2.19.0
+ragas>=0.2.0
 
 # LangSmith tracing (Day 3) — observe retrieval + generation steps for debugging failures
 langsmith>=0.1.80
