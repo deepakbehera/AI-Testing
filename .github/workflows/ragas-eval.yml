@@ -1,0 +1,103 @@
+name: RAG Evaluation — RAGAS
+
+# ── Triggers ──────────────────────────────────────────────────────────────────
+on:
+  push:
+    branches: [main]
+    paths:
+      - "module-05-ragas-rag-testing/ci/**"
+      - ".github/workflows/ragas-eval.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "module-05-ragas-rag-testing/ci/**"
+  workflow_dispatch:           # manual "Run workflow" button in Actions tab
+
+# ── Jobs ──────────────────────────────────────────────────────────────────────
+# There is no deployed rag-chatbot app in this CI run, and retrieval is faked --
+# module-05-ragas-rag-testing/ci/golden_dataset.json carries hand-authored
+# retrieved_contexts instead of calling rag_engine.py's real retriever. It builds
+# a fresh eval dataset by calling the model directly (generation only), then runs
+# the RAGAS pytest suites against it.
+jobs:
+
+  ragas-eval:
+    name: RAGAS Evaluation Suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('module-05-ragas-rag-testing/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: pip install -r module-05-ragas-rag-testing/requirements.txt
+
+      # Same Azure deployment as Module 4 (see ci/judge_model.py) -- one model
+      # plays both "the app under test" and "the RAGAS judge."
+      - name: Generate eval dataset (calls the Azure-deployed LLM directly)
+        env:
+          PROVIDER: azure
+          AZURE_OPENAI_ENDPOINT_C: ${{ secrets.AZURE_OPENAI_ENDPOINT_C }}
+          AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
+          AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT || 'Phi-4-mini-instruct' }}
+        run: |
+          cd module-05-ragas-rag-testing/ci
+          python generate_eval_dataset.py
+
+      - name: Run RAGAS quality suite (faithfulness, answer relevancy, context precision, context recall)
+        env:
+          PROVIDER: azure
+          AZURE_OPENAI_ENDPOINT_C: ${{ secrets.AZURE_OPENAI_ENDPOINT_C }}
+          AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
+          AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT || 'Phi-4-mini-instruct' }}
+          AZURE_EMBEDDING_DEPLOYMENT: ${{ vars.AZURE_EMBEDDING_DEPLOYMENT || 'text-embedding-3-small' }}
+        run: |
+          cd module-05-ragas-rag-testing/ci
+          pytest test_ragas_eval.py -v --tb=short \
+            --html=eval_report.html --self-contained-html \
+            2>&1 | tee eval_output.txt
+
+      - name: Run hard-negative metric-sensitivity suite
+        env:
+          PROVIDER: azure
+          AZURE_OPENAI_ENDPOINT_C: ${{ secrets.AZURE_OPENAI_ENDPOINT_C }}
+          AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
+          AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT || 'Phi-4-mini-instruct' }}
+          AZURE_EMBEDDING_DEPLOYMENT: ${{ vars.AZURE_EMBEDDING_DEPLOYMENT || 'text-embedding-3-small' }}
+        run: |
+          cd module-05-ragas-rag-testing/ci
+          pytest test_hard_negatives.py -v --tb=short \
+            --html=hard_negative_report.html --self-contained-html \
+            2>&1 | tee hard_negative_output.txt
+
+      - name: Write coverage matrix to job summary
+        if: always()
+        run: |
+          cd module-05-ragas-rag-testing/ci
+          echo "## RAG Coverage Matrix (capability x failure mode)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          python coverage_matrix.py >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📄 Download the full HTML reports from the Artifacts section above." >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload eval artifacts
+        uses: actions/upload-artifact@v4
+        if: always()         # upload even on failure — you need the report to debug
+        with:
+          name: ragas-report-${{ github.run_id }}
+          path: |
+            module-05-ragas-rag-testing/ci/eval_dataset.json
+            module-05-ragas-rag-testing/ci/eval_report.html
+            module-05-ragas-rag-testing/ci/eval_output.txt
+            module-05-ragas-rag-testing/ci/hard_negative_report.html
+            module-05-ragas-rag-testing/ci/hard_negative_output.txt
+          retention-days: 30

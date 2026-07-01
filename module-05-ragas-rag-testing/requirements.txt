@@ -18,6 +18,15 @@ langchain-community>=0.3.0,<0.4
 datasets>=2.19.0
 ragas>=0.2.0
 
+# Structured-output client for the RAGAS judge LLM (ragas.llms.InstructorLLM) --
+# used by examples/01_ragas_intro.ipynb and ci/judge_model.py.
+instructor>=1.0.0
+
+# Retry wrapper around ci/judge_model.py's embedding calls (transient Azure AI
+# Foundry gateway errors) -- already a transitive dependency of instructor, listed
+# explicitly here since ci/judge_model.py imports it directly.
+tenacity>=8.0.0
+
 # LangSmith tracing (Day 3) — observe retrieval + generation steps for debugging failures
 langsmith>=0.1.80
 

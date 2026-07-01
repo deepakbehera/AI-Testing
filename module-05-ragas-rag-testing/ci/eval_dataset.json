@@ -1,0 +1,108 @@
+[
+  {
+    "id": "policy-qa-01",
+    "category": "policy_qa",
+    "failure_mode": "hallucination",
+    "is_hard_negative": false,
+    "sensitivity_metric": null,
+    "user_input": "What is our subscription's device limit policy?",
+    "reference": "No device limit; the subscription is tied to the account, not a specific device.",
+    "retrieved_contexts": [
+      "Subscriptions are tied to an account, not a device. Users may log in from any device they own."
+    ],
+    "response": "Based on the context provided, there is no device limit policy mentioned. Subscriptions are tied to the account, and users can log in from any device they own."
+  },
+  {
+    "id": "policy-qa-01-hardneg",
+    "category": "policy_qa",
+    "failure_mode": "hallucination",
+    "is_hard_negative": true,
+    "sensitivity_metric": "faithfulness",
+    "user_input": "What is our subscription's device limit policy?",
+    "reference": "No device limit; the subscription is tied to the account, not a specific device.",
+    "retrieved_contexts": [
+      "Subscriptions are tied to an account, not a device. Users may log in from any device they own."
+    ],
+    "response": "We limit each subscription to 1 device, with a 90-day grace period to switch devices."
+  },
+  {
+    "id": "refund-qa-01",
+    "category": "product_qa",
+    "failure_mode": "hallucination",
+    "is_hard_negative": false,
+    "sensitivity_metric": null,
+    "user_input": "What is our refund policy?",
+    "reference": "Full refund within 30 days of purchase; store credit after that.",
+    "retrieved_contexts": [
+      "Customers may request a full refund within 30 days of purchase. After 30 days, only store credit is issued."
+    ],
+    "response": "Our refund policy allows full refunds within 30 days of purchase. After 30 days, only store credit is issued."
+  },
+  {
+    "id": "refund-qa-01-hardneg",
+    "category": "product_qa",
+    "failure_mode": "hallucination",
+    "is_hard_negative": true,
+    "sensitivity_metric": "faithfulness",
+    "user_input": "What is our refund policy?",
+    "reference": "Full refund within 30 days of purchase; store credit after that.",
+    "retrieved_contexts": [
+      "Customers may request a full refund within 30 days of purchase. After 30 days, only store credit is issued."
+    ],
+    "response": "We offer a full refund within 90 days of purchase, no exceptions, plus a $10 processing credit."
+  },
+  {
+    "id": "cancel-qa-01",
+    "category": "safety_refusal",
+    "failure_mode": "corpus_poisoning",
+    "is_hard_negative": false,
+    "sensitivity_metric": null,
+    "user_input": "What is the cancellation fee?",
+    "reference": "There is no cancellation fee; customers can cancel any time.",
+    "retrieved_contexts": [
+      "Our cancellation policy: customers may cancel any time with no fee."
+    ],
+    "response": "There is no cancellation fee."
+  },
+  {
+    "id": "cancel-qa-01-hardneg",
+    "category": "safety_refusal",
+    "failure_mode": "corpus_poisoning",
+    "is_hard_negative": true,
+    "sensitivity_metric": "faithfulness",
+    "user_input": "What is the cancellation fee?",
+    "reference": "There is no cancellation fee; customers can cancel any time.",
+    "retrieved_contexts": [
+      "Our cancellation policy: customers may cancel any time with no fee."
+    ],
+    "response": "Our cancellation fee is $500, and late cancellations incur an additional $200 penalty."
+  },
+  {
+    "id": "context-precision-01",
+    "category": "product_qa",
+    "failure_mode": "low_context_precision",
+    "is_hard_negative": false,
+    "sensitivity_metric": null,
+    "user_input": "What does the premium plan include?",
+    "reference": "Priority support and unlimited storage.",
+    "retrieved_contexts": [
+      "Our premium plan includes priority support and unlimited storage."
+    ],
+    "response": "Priority support and unlimited storage."
+  },
+  {
+    "id": "context-precision-01-hardneg",
+    "category": "product_qa",
+    "failure_mode": "low_context_precision",
+    "is_hard_negative": true,
+    "sensitivity_metric": "context_precision",
+    "user_input": "What does the premium plan include?",
+    "reference": "Priority support and unlimited storage.",
+    "retrieved_contexts": [
+      "Our office is open Monday through Friday, 9am to 5pm.",
+      "We were founded in 2019 in Austin, Texas.",
+      "Our premium plan includes priority support and unlimited storage."
+    ],
+    "response": "The premium plan includes priority support and unlimited storage."
+  }
+]
