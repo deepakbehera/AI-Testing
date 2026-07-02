@@ -48,7 +48,7 @@ jobs:
           PROVIDER: azure
           AZURE_OPENAI_ENDPOINT_C: ${{ secrets.AZURE_OPENAI_ENDPOINT_C }}
           AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
-          AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT || 'Phi-4-mini-instruct' }}
+          AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT || 'DeepSeek-V3.2' }}
         run: |
           cd module-05-ragas-rag-testing/ci
           python generate_eval_dataset.py
@@ -58,7 +58,7 @@ jobs:
           PROVIDER: azure
           AZURE_OPENAI_ENDPOINT_C: ${{ secrets.AZURE_OPENAI_ENDPOINT_C }}
           AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
-          AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT || 'Phi-4-mini-instruct' }}
+          AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT || 'DeepSeek-V3.2' }}
           AZURE_EMBEDDING_DEPLOYMENT: ${{ vars.AZURE_EMBEDDING_DEPLOYMENT || 'text-embedding-3-small' }}
         run: |
           cd module-05-ragas-rag-testing/ci
@@ -71,7 +71,7 @@ jobs:
           PROVIDER: azure
           AZURE_OPENAI_ENDPOINT_C: ${{ secrets.AZURE_OPENAI_ENDPOINT_C }}
           AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
-          AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT || 'Phi-4-mini-instruct' }}
+          AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT || 'DeepSeek-V3.2' }}
           AZURE_EMBEDDING_DEPLOYMENT: ${{ vars.AZURE_EMBEDDING_DEPLOYMENT || 'text-embedding-3-small' }}
         run: |
           cd module-05-ragas-rag-testing/ci

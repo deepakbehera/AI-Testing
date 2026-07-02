@@ -80,54 +80,50 @@ hop_partitions = {
 
 A test suite built only from `single_hop` cases will pass beautifully and tell you nothing about whether your planner can handle a Klarna-style dispute — the same "happy path only" trap from Module 4 Day 4, one layer up.
 
-### Building and tracing a 2-hop loop
+### Building and tracing a real 2-hop loop
+
+Earlier drafts of this module used a rule-based stand-in here — a dict lookup for retrieval, a one-line boolean for the planner. That's backwards for a module about testing agents: faking the planner fakes the exact decision point under test. `agent.py`, right next to the notebooks in `examples/`, builds the real thing instead — embedding-similarity retrieval over an in-memory corpus, a live LLM planner deciding whether to continue (with structured output via `instructor`), and a live LLM generator. Unlike Modules 4/5, there's no separate `ci/` folder or pytest suite here — what's new in this module is the agent itself, and that's taught interactively, cell by cell, not re-packaged into another CI pipeline with the metrics swapped out:
 
 ```python
-from langsmith import traceable
+from agent import agentic_rag, CORPUS, retrieve  # examples/agent.py
 
-# A small knowledge base where the answer requires TWO hops:
+# CORPUS includes a fact that requires TWO hops to answer:
 # "What is the cancellation fee for the product that replaced WidgetPro 2000?"
-KNOWLEDGE_BASE = {
-    "discontinuation": "WidgetPro 2000 was discontinued in 2023 and replaced by WidgetPro 3000.",
-    "fee_3000":        "WidgetPro 3000's cancellation fee is $0 — it can be canceled anytime at no charge.",
-    "fee_2000":        "WidgetPro 2000's cancellation fee was $50 before it was discontinued.",
-}
+# ("WidgetPro 2000 was discontinued... replaced by WidgetPro 3000." +
+#  "WidgetPro 3000's cancellation fee is $0...")
 
-@traceable(run_type="retriever")
-def retrieve(query: str) -> list[str]:
-    # A deliberately simple, deterministic stand-in retriever — real systems use
-    # embedding similarity (Module 5 Day 2). Keeping it rule-based here makes the
-    # PLANNER's looping behavior the thing under test, not the retriever's ranking.
-    q = query.lower()
-    if "3000" in q:
-        return [KNOWLEDGE_BASE["fee_3000"]]
-    if "replaced" in q or "discontinued" in q:
-        return [KNOWLEDGE_BASE["discontinuation"]]
-    return [KNOWLEDGE_BASE["fee_2000"]]
-
-@traceable(run_type="chain", name="planner")
-def has_enough_info(question: str, facts_so_far: list[str]) -> bool:
-    # Rule-based stand-in for an LLM planner: "enough" once we have a fee figure.
-    return any("fee is" in f or "fee was" in f for f in facts_so_far)
-
-@traceable(run_type="chain", name="agentic_rag_loop")
-def agentic_rag(question: str, max_hops: int = 3) -> tuple[str, list[str]]:
-    facts: list[str] = []
-    query = question
-    for hop in range(1, max_hops + 1):
-        new_facts = retrieve(query)
-        facts.extend(new_facts)
-        if has_enough_info(question, facts):
-            break
-        # Reformulate: once we know the replacement product, search for ITS fee.
-        query = "WidgetPro 3000 cancellation fee" if hop == 1 else question
-    return f"[{hop} hop(s)] facts used: {facts}", facts
-
-answer, facts = agentic_rag("What is the cancellation fee for the product that replaced WidgetPro 2000?")
-print(answer)
+result = await agentic_rag(
+    "What is the cancellation fee for the product that replaced WidgetPro 2000?",
+    verbose=True,
+)
+print(f"[{result.num_hops} hop(s)] facts used: {result.retrieved_contexts}")
+print("Answer:", result.response)
 ```
 
-With `LANGSMITH_TRACING` enabled, this shows up as a single `agentic_rag_loop` trace with nested `retriever` and `planner` spans per hop — exactly the trace tree you'd inspect to tell whether a real failure was premature stopping (planner span returns `True` too early) or query drift (the reformulated query in the second `retriever` span has wandered off-topic).
+`agentic_rag()`'s loop, unpacked (full version in `examples/agent.py`):
+
+```python
+async def agentic_rag(question: str, max_hops: int = 3, verbose: bool = False) -> AgentResult:
+    facts: list[str] = []
+    query = question
+    hit_max_hops = True
+    for hop in range(1, max_hops + 1):
+        new_facts = await retrieve(query)          # real embedding similarity, not a keyword dict
+        facts.extend(f for f in new_facts if f not in facts)
+        decision = await _plan(question, facts)    # real LLM call -- structured PlannerDecision
+        if decision.enough_info:
+            hit_max_hops = False
+            break
+        query = decision.next_query                 # the LLM's own reformulation, not a hard-coded string
+    # Told explicitly when the planner never confirmed enough_info, so it hedges
+    # instead of confidently answering from an incomplete fact set.
+    response = await _generate(question, facts, uncertain=hit_max_hops)
+    return AgentResult(response=response, retrieved_contexts=facts, num_hops=hop, hit_max_hops=hit_max_hops)
+```
+
+`hit_max_hops` is the class's own honest signal for the bounded-loop shape of "infinite retrieval loop" (this module's loop can't run forever, but it *can* exhaust `max_hops` without the planner ever being confident) — it's a property `AgentResult` reports about itself, not something inferred after the fact from `num_hops` alone.
+
+`retrieve`, `_plan`, and `_generate` are each `@traceable`. With `LANGSMITH_TRACING` enabled, a run shows up as a single `agentic_rag_loop` trace with nested `retriever`, `planner`, and `generator` spans per hop — exactly the trace tree you'd inspect to tell whether a real failure was premature stopping (a `planner` span's `enough_info` came back `True` too early) or query drift (the `next_query` in a later `retriever` span has wandered off-topic). `verbose=True` prints the same information inline without needing a LangSmith account.
 
 ### Demo you'll see
 **`examples/01_multistep_retrieval.ipynb`**
@@ -172,59 +168,66 @@ for label, answer in [("MEMORY INTACT", answer_with_memory), ("MEMORY DROPPED", 
 
 ### Hard negative — right facts, wrong combination (`reasoning_chain_break`)
 
-This is the failure mode Module 5's single-hop metrics structurally cannot catch, because both retrieved facts are individually faithful to their source — the bug is in how they were *combined*.
+This is the failure mode Module 5's single-hop metrics structurally cannot catch, because both retrieved facts are individually faithful to their source — the bug is in how they were *combined*. `examples/golden_dataset.json`'s `multi-hop-widgetpro-01` / `multi-hop-widgetpro-01-hardneg` pair is this exact scenario:
 
 ```python
-hop1_fact = "WidgetPro 2000 was discontinued in 2023 and replaced by WidgetPro 3000."
-hop2_facts = [
-    "WidgetPro 3000's cancellation fee is $0.",
-    "WidgetPro 2000's cancellation fee was $50.",
-]
-
-# Hard negative: the agent answers with the OLD product's fee instead of the new one's —
-# every individual fact is true and grounded; the combination is wrong.
-reasoning_break_answer = "The cancellation fee for the product that replaced WidgetPro 2000 is $50."
-correct_answer = "The cancellation fee for the product that replaced WidgetPro 2000 (WidgetPro 3000) is $0."
-
-def check_correct_product_fee(answer: str) -> bool:
-    # The question asks about the REPLACEMENT product — the answer must cite WidgetPro 3000's fee, not 2000's.
-    return "$0" in answer and "WidgetPro 3000" in answer
-
-for label, answer in [("HARD NEGATIVE (should fail)", reasoning_break_answer), ("CORRECT (should pass)", correct_answer)]:
-    print(f"[{label}] -> passed={check_correct_product_fee(answer)}")
+# examples/golden_dataset.json (abbreviated)
+{
+    "id": "multi-hop-widgetpro-01-hardneg", "eval_type": "reasoning", "is_hard_negative": true,
+    "must_include": ["WidgetPro 3000", "$0"], "must_not_include": ["$50"],
+    "retrieved_contexts": [
+        "WidgetPro 2000 was discontinued in 2023 and replaced by WidgetPro 3000.",
+        "WidgetPro 2000's cancellation fee was $50 before it was discontinued.",
+    ],
+    # Hard negative: the agent answers with the OLD product's fee instead of the new one's —
+    # every individual fact is true and grounded; the COMBINATION is wrong.
+    "response": "The cancellation fee for the product that replaced WidgetPro 2000 is $50.",
+}
 ```
 
-> A faithfulness check alone would pass the hard negative above — `$50` really is in the retrieved context. This is exactly why agentic RAG needs reasoning-level checks on top of Module 5's faithfulness/groundedness checks, not instead of them.
+```python
+# examples/02_tool_memory_reasoning.ipynb
+def check_correct_product_fee(answer: str) -> bool:
+    # The question asks about the REPLACEMENT product -- the answer must cite WidgetPro 3000's fee, not 2000's.
+    return "$0" in answer and "WidgetPro 3000" in answer
+```
+
+> A faithfulness check alone would PASS the hard negative above — `$50` really is in the retrieved context (the Day 2 notebook demonstrates this against Module 5 Day 3's `keyword_faithfulness_check()`). This is exactly why agentic RAG needs reasoning-level checks on top of Module 5's faithfulness/groundedness checks, not instead of them.
 
 ### Failure-path testing: the hop that comes up empty
 
-What should the agent do when hop 2 finds nothing relevant? Two outcomes:
+What should the agent do when a hop finds nothing relevant? Two outcomes:
 
-- **Graceful** — "I found that WidgetPro 3000 replaced WidgetPro 2000, but I don't have its cancellation fee on file."
-- **Ungraceful** — confidently invents a fee number to fill the gap.
+- **Graceful** — admits the gap: "I found that WidgetPro 3000 replaced WidgetPro 2000, but I don't have its cancellation fee on file."
+- **Ungraceful** — confidently invents a number to fill the gap.
+
+`examples/golden_dataset.json`'s `graceful-failure-01` asks the real agent a question its corpus genuinely cannot answer (no fact about TurboMax Pro's cancellation fee exists anywhere in `CORPUS`) — a live test of whether the generator's prompt actually produces graceful behavior, not just a scripted example of it:
 
 ```python
+# examples/02_tool_memory_reasoning.ipynb
 def empty_hop_response_is_graceful(response: str) -> bool:
-    hedge_phrases = ["don't have", "couldn't find", "no information", "not available"]
+    hedge_phrases = ["don't have", "doesn't have", "couldn't find", "no information",
+                      "not available", "not in the knowledge base", "unable to find"]
     return any(phrase in response.lower() for phrase in hedge_phrases)
-
-graceful   = "I found that WidgetPro 3000 replaced WidgetPro 2000, but I don't have its cancellation fee on file."
-ungraceful = "The cancellation fee for WidgetPro 3000 is $25."   # invented — hop 2 found nothing
-
-print(f"graceful   -> {empty_hop_response_is_graceful(graceful)}")
-print(f"ungraceful -> {empty_hop_response_is_graceful(ungraceful)}")
 ```
 
-This is a hard negative aimed squarely at the failure pattern behind Klarna's "complex cases dropped in quality" — an agent that can't find the next fact should say so, not fabricate one to keep the chain moving.
+```python
+# examples/golden_dataset.json's hard negative for the same question
+ungraceful = "The cancellation fee for TurboMax Pro is $25."   # fabricated — no such fact exists anywhere
+```
+
+This is a hard negative aimed squarely at the failure pattern behind Klarna's "complex cases dropped in quality" — an agent that can't find the next fact should say so, not fabricate one to keep the chain moving. If the real agent's live run ever comes back `graceful=False`, that's not a broken test — it's a real finding that the generator's prompt needs a stronger instruction to hedge.
 
 ### Extending the coverage matrix
 
-Module 5 Day 2 added retrieval columns to Module 4 Day 4's matrix. Today adds the agentic ones:
+Module 5 Day 2 added retrieval columns to Module 4 Day 4's matrix. Today adds the agentic ones — this table now reflects `examples/golden_dataset.json` exactly, not a hand-typed illustration:
 
 | Capability ↓ / Failure mode → | hallucination | reasoning_chain_break | premature_stop | ungraceful_failure |
 |---|---|---|---|---|
-| `single_hop_qa` | covered (Module 5) | n/a | n/a | 0 |
-| `multi_hop_qa` | 0 | covered (today) | 0 ← gap | covered (today) |
+| `single_hop_qa` | covered | n/a | n/a | n/a |
+| `multi_hop_qa` | covered | covered (today) | covered (today) | covered (today) |
+
+`premature_stop` was a named gap in this module's first draft — `multi-hop-turbomax-01` / `-hardneg` closes it, and closes it in a way worth noticing: the hard negative's `sensitivity_metric` field names `context_recall`, not `faithfulness`, as the signal that would catch it — a planner that stops one hop too early retrieves a context that's individually faithful, so only recall-against-the-full-reference exposes that a fact never got retrieved at all. (This module doesn't re-run RAGAS metrics in a pytest suite the way Module 5's CI does — the field documents the diagnosis; `result.hit_max_hops` from the real agent run is the check you'd actually reach for here, see above.) `query_drift`, also named in Day 1's failure-mode table, has **no column here yet** — that gap is this week's Try It Yourself.
 
 The `single_hop_qa` row not needing the agentic columns is itself useful information — it tells you those columns only matter once a capability genuinely requires multiple hops.
 
@@ -243,7 +246,7 @@ Exercise: [`exercises/02_tool_memory_reasoning_exercise.md`](exercises/02_tool_m
 
 ## Module 6 → Module 7 bridge
 
-You can now build and trace a multi-hop retrieval loop and catch the failure modes specific to it by hand: reasoning-chain breaks, premature stops, ungraceful failures. Module 7 formalizes exactly these checks into DeepEval's purpose-built agent metrics — task completion, tool correctness, argument correctness, turn relevancy — so you stop hand-rolling `check_correct_product_fee()`-style functions and get a proper, reusable framework for it. The agent in Module 7 also gains real tool-calling (not just retrieval), which is where today's "tool validation" groundwork starts paying off.
+You can now build a real, LLM-planned, LLM-generated multi-hop retrieval loop and catch the failure modes specific to it: reasoning-chain breaks, premature stops, ungraceful failures. Module 7 formalizes exactly these checks into DeepEval's purpose-built agent metrics — task completion, tool correctness, argument correctness, turn relevancy — so you stop hand-rolling `reasoning_combination_correct()`-style functions and get a proper, reusable framework for it. The agent in Module 7 also gains real tool-calling (not just retrieval), which is where today's "tool validation" groundwork starts paying off.
 
 ---
 

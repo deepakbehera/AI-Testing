@@ -1,0 +1,124 @@
+[
+  {
+    "id": "single-hop-support-01",
+    "category": "single_hop_qa",
+    "failure_mode": "hallucination",
+    "is_hard_negative": false,
+    "eval_type": "ragas",
+    "user_input": "What does our premium support plan include?",
+    "reference": "24/7 phone access and a 1-hour response SLA."
+  },
+  {
+    "id": "single-hop-support-01-hardneg",
+    "category": "single_hop_qa",
+    "failure_mode": "hallucination",
+    "is_hard_negative": true,
+    "eval_type": "ragas",
+    "sensitivity_metric": "faithfulness",
+    "user_input": "What does our premium support plan include?",
+    "reference": "24/7 phone access and a 1-hour response SLA.",
+    "retrieved_contexts": [
+      "Our premium support plan includes 24/7 phone access and a 1-hour response SLA."
+    ],
+    "response": "Our premium support plan includes 24/7 phone access, a 1-hour response SLA, and a dedicated account manager with same-day onsite visits."
+  },
+  {
+    "id": "multi-hop-hq-01",
+    "category": "multi_hop_qa",
+    "failure_mode": "hallucination",
+    "is_hard_negative": false,
+    "eval_type": "ragas",
+    "user_input": "Does our headquarters offer walk-in support visits?",
+    "reference": "No -- headquarters relocated to Denver, and the Denver office does not offer walk-in support; all support is online only."
+  },
+  {
+    "id": "multi-hop-hq-01-hardneg",
+    "category": "multi_hop_qa",
+    "failure_mode": "hallucination",
+    "is_hard_negative": true,
+    "eval_type": "ragas",
+    "sensitivity_metric": "faithfulness",
+    "user_input": "Does our headquarters offer walk-in support visits?",
+    "reference": "No -- headquarters relocated to Denver, and the Denver office does not offer walk-in support; all support is online only.",
+    "retrieved_contexts": [
+      "Our headquarters relocated from Austin to Denver in 2022.",
+      "The Denver office does not offer walk-in support; all support is online only."
+    ],
+    "response": "Yes, our Denver headquarters welcomes walk-in visits every weekday from 9am to 5pm."
+  },
+  {
+    "id": "multi-hop-turbomax-01",
+    "category": "multi_hop_qa",
+    "failure_mode": "premature_stop",
+    "is_hard_negative": false,
+    "eval_type": "ragas",
+    "user_input": "What is the current annual subscription price for the product formerly known as TurboMax 5?",
+    "reference": "TurboMax Pro's annual subscription costs $299."
+  },
+  {
+    "id": "multi-hop-turbomax-01-hardneg",
+    "category": "multi_hop_qa",
+    "failure_mode": "premature_stop",
+    "is_hard_negative": true,
+    "eval_type": "ragas",
+    "sensitivity_metric": "context_recall",
+    "user_input": "What is the current annual subscription price for the product formerly known as TurboMax 5?",
+    "reference": "TurboMax Pro's annual subscription costs $299.",
+    "retrieved_contexts": [
+      "TurboMax 5 was renamed to TurboMax Pro in 2024 after a rebranding update."
+    ],
+    "response": "TurboMax Pro is the current name for what used to be called TurboMax 5.",
+    "_note": "Planner stopped after hop 1 (the rename fact) and never retrieved the price fact. context_recall against the price-bearing reference should score low even though the one chunk retrieved is perfectly faithful -- this is what premature_stop looks like as a metric, not a vibe."
+  },
+  {
+    "id": "multi-hop-widgetpro-01",
+    "category": "multi_hop_qa",
+    "failure_mode": "reasoning_chain_break",
+    "is_hard_negative": false,
+    "eval_type": "reasoning",
+    "user_input": "What is the cancellation fee for the product that replaced WidgetPro 2000?",
+    "reference": "WidgetPro 3000's cancellation fee is $0.",
+    "must_include": ["WidgetPro 3000", "$0"],
+    "must_not_include": ["$50"]
+  },
+  {
+    "id": "multi-hop-widgetpro-01-hardneg",
+    "category": "multi_hop_qa",
+    "failure_mode": "reasoning_chain_break",
+    "is_hard_negative": true,
+    "eval_type": "reasoning",
+    "user_input": "What is the cancellation fee for the product that replaced WidgetPro 2000?",
+    "reference": "WidgetPro 3000's cancellation fee is $0.",
+    "must_include": ["WidgetPro 3000", "$0"],
+    "must_not_include": ["$50"],
+    "retrieved_contexts": [
+      "WidgetPro 2000 was discontinued in 2023 and replaced by WidgetPro 3000.",
+      "WidgetPro 2000's cancellation fee was $50 before it was discontinued."
+    ],
+    "response": "The cancellation fee for the product that replaced WidgetPro 2000 is $50.",
+    "_note": "Both retrieved facts are individually true and grounded -- $50 really was WidgetPro 2000's fee. The bug is in the COMBINATION: the answer needed the fee for the REPLACEMENT product, not the discontinued one. A faithfulness check would PASS this; only a reasoning-level check (must_include/must_not_include) catches it. This is the exact scenario Module 6 Day 2's notes.md calls out."
+  },
+  {
+    "id": "graceful-failure-01",
+    "category": "multi_hop_qa",
+    "failure_mode": "ungraceful_failure",
+    "is_hard_negative": false,
+    "eval_type": "graceful",
+    "user_input": "What is the cancellation fee for TurboMax Pro?",
+    "reference": "This information is not available in the knowledge base."
+  },
+  {
+    "id": "graceful-failure-01-hardneg",
+    "category": "multi_hop_qa",
+    "failure_mode": "ungraceful_failure",
+    "is_hard_negative": true,
+    "eval_type": "graceful",
+    "user_input": "What is the cancellation fee for TurboMax Pro?",
+    "reference": "This information is not available in the knowledge base.",
+    "retrieved_contexts": [
+      "TurboMax Pro's annual subscription costs $299, unchanged from TurboMax 5's price."
+    ],
+    "response": "The cancellation fee for TurboMax Pro is $25.",
+    "_note": "No fact about TurboMax Pro's cancellation fee exists anywhere in the corpus -- this number is fabricated outright, not even loosely grounded. A graceful agent should hedge instead of inventing a figure."
+  }
+]
