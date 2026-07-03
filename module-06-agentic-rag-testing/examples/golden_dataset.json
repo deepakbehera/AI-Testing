@@ -71,6 +71,18 @@
     "_note": "Planner stopped after hop 1 (the rename fact) and never retrieved the price fact. context_recall against the price-bearing reference should score low even though the one chunk retrieved is perfectly faithful -- this is what premature_stop looks like as a metric, not a vibe."
   },
   {
+    "id": "multi-hop-widgetpro-01-memory-drop",
+    "category": "multi_hop_qa",
+    "failure_mode": "reasoning_chain_break",
+    "is_hard_negative": true,
+    "eval_type": "memory",
+    "user_input": "What is the cancellation fee for the product that replaced WidgetPro 2000?",
+    "reference": "WidgetPro 3000's cancellation fee is $0.",
+    "must_include": ["WidgetPro 3000"],
+    "response": "The cancellation fee is $0.",
+    "_note": "Correct fee but hop 1's product identity was dropped — the answer is technically right but unverifiable without naming which product it applies to. This is the conversational-memory version of Module 5's chunk-boundary bug."
+  },
+  {
     "id": "multi-hop-widgetpro-01",
     "category": "multi_hop_qa",
     "failure_mode": "reasoning_chain_break",

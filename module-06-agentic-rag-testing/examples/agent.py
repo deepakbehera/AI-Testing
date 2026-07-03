@@ -206,3 +206,8 @@ async def agentic_rag(question: str, max_hops: int = 3, verbose: bool = False) -
     # rather than confidently answer from facts the planner itself wasn't sure covered the question.
     response = await _generate(question, facts, uncertain=hit_max_hops)
     return AgentResult(response=response, retrieved_contexts=facts, num_hops=hop, hit_max_hops=hit_max_hops)
+
+
+# Exposed for notebook LLM-judge usage — same client and model the agent loop uses.
+judge_client = _instructor_client
+judge_model = _llm_model

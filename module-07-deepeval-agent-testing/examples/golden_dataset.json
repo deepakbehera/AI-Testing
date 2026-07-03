@@ -1,0 +1,146 @@
+[
+  {
+    "id": "order-status-01",
+    "category": "order_management",
+    "failure_mode": "none",
+    "is_hard_negative": false,
+    "eval_type": "tool_correctness",
+    "user_input": "What's the status of my order #12345?",
+    "reference": "Order #12345 has shipped. It contains a WidgetPro 3000 and is estimated to arrive in 2 days.",
+    "tools_called": [
+      {
+        "name": "check_order_status",
+        "input_parameters": {"order_id": "12345"},
+        "output": {"status": "shipped", "product": "WidgetPro 3000", "estimated_delivery": "2 days", "amount": 199.0}
+      }
+    ],
+    "response": "Your order #12345 (WidgetPro 3000) has shipped and should arrive in about 2 days."
+  },
+  {
+    "id": "order-status-01-hardneg",
+    "category": "order_management",
+    "failure_mode": "wrong_tool",
+    "is_hard_negative": true,
+    "eval_type": "tool_correctness",
+    "user_input": "What's the status of my order #12345?",
+    "reference": "Order #12345 has shipped. It contains a WidgetPro 3000 and is estimated to arrive in 2 days.",
+    "tools_called": [
+      {
+        "name": "process_refund",
+        "input_parameters": {"order_id": "12345", "reason": "status inquiry"},
+        "output": {"refund_id": "R-ABCD12", "amount": 199.0, "status": "initiated", "reason": "status inquiry"}
+      }
+    ],
+    "response": "I've processed a refund for order #12345 in the amount of $199.00.",
+    "_note": "Wrong tool: the user asked for order STATUS, not a refund. process_refund was called instead of check_order_status. ToolCorrectnessMetric should fail this. Note how the output sounds plausible (a refund was processed and the amount is real) — this is what makes it a hard negative and not just an obviously wrong answer."
+  },
+  {
+    "id": "refund-01",
+    "category": "order_management",
+    "failure_mode": "none",
+    "is_hard_negative": false,
+    "eval_type": "task_completion",
+    "user_input": "I'd like to request a refund for order #67890. The product arrived damaged.",
+    "reference": "A refund has been initiated for order #67890 (TurboMax Pro, $299.00). The customer should receive confirmation.",
+    "tools_called": [
+      {
+        "name": "process_refund",
+        "input_parameters": {"order_id": "67890", "reason": "product arrived damaged"},
+        "output": {"refund_id": "R-XY9901", "amount": 299.0, "status": "initiated", "reason": "product arrived damaged"}
+      }
+    ],
+    "response": "I've initiated a refund for order #67890 (TurboMax Pro) in the amount of $299.00. Your refund ID is R-XY9901. You should see the funds returned within 5-7 business days."
+  },
+  {
+    "id": "refund-01-hardneg",
+    "category": "order_management",
+    "failure_mode": "wrong_argument",
+    "is_hard_negative": true,
+    "eval_type": "argument_correctness",
+    "user_input": "I'd like to request a refund for order #67890. The product arrived damaged.",
+    "reference": "A refund has been initiated for order #67890 (TurboMax Pro, $299.00). The customer should receive confirmation.",
+    "tools_called": [
+      {
+        "name": "process_refund",
+        "input_parameters": {"order_id": "12345", "reason": "product arrived damaged"},
+        "output": {"refund_id": "R-ZZ8812", "amount": 199.0, "status": "initiated", "reason": "product arrived damaged"}
+      }
+    ],
+    "response": "I've initiated a refund for your order in the amount of $199.00. Your refund ID is R-ZZ8812.",
+    "_note": "Right tool (process_refund), wrong argument: the agent passed order_id='12345' (which was mentioned in an earlier conversation turn) instead of '67890' (the order in the CURRENT user message). This is argument contamination — the correct order_id was in the message but a different one was extracted from context. Note that the tool returned successfully (12345 is a real order) and the response sounds plausible, making this a genuinely hard negative. ArgumentCorrectnessMetric should fail; ToolCorrectnessMetric may pass because the right function was called."
+  },
+  {
+    "id": "product-info-01",
+    "category": "product_inquiry",
+    "failure_mode": "none",
+    "is_hard_negative": false,
+    "eval_type": "tool_correctness",
+    "user_input": "What's the cancellation fee for TurboMax Pro?",
+    "reference": "The cancellation fee for TurboMax Pro is currently unknown — this information is not available in our system. The customer should be directed to contact support for clarification.",
+    "tools_called": [
+      {
+        "name": "get_product_info",
+        "input_parameters": {"product_name": "TurboMax Pro"},
+        "output": {"price": "$299/year", "cancellation_fee": "unknown", "support_type": "online"}
+      }
+    ],
+    "response": "I've checked our product catalogue for TurboMax Pro. The cancellation fee information is currently listed as 'unknown' in our system. I'd recommend contacting our online support team for the most accurate and up-to-date cancellation policy."
+  },
+  {
+    "id": "product-info-01-hardneg",
+    "category": "product_inquiry",
+    "failure_mode": "no_tool_called",
+    "is_hard_negative": true,
+    "eval_type": "tool_correctness",
+    "user_input": "What's the cancellation fee for TurboMax Pro?",
+    "reference": "The cancellation fee for TurboMax Pro is currently unknown — this information is not available in our system.",
+    "tools_called": [],
+    "response": "The cancellation fee for TurboMax Pro is $25 if you cancel within the first 30 days, and $50 after that.",
+    "_note": "No tool was called — the agent answered from parametric (training) memory and hallucinated specific dollar amounts that don't exist in the actual product database. This is the Air Canada pattern from Day 1: answering a policy question without calling the authoritative tool. tools_called=[] is the key signal. ToolCorrectnessMetric should fail this because get_product_info was never invoked. TaskCompletionMetric may also fail because the answer is factually incorrect, but ToolCorrectnessMetric catches it regardless of whether the hallucinated answer happens to be correct."
+  },
+  {
+    "id": "escalation-01",
+    "category": "escalation",
+    "failure_mode": "none",
+    "is_hard_negative": false,
+    "eval_type": "task_completion",
+    "user_input": "I'm really frustrated with the service I received. I want to speak to a manager.",
+    "reference": "The customer's complaint has been escalated to a human agent. A ticket has been created.",
+    "tools_called": [
+      {
+        "name": "escalate_to_human",
+        "input_parameters": {"reason": "customer requesting to speak with a manager about service dissatisfaction"},
+        "output": {"ticket_id": "CS-A1B2", "estimated_wait": "2 hours", "queue": "general"}
+      }
+    ],
+    "response": "I understand your frustration and I'm sorry for the experience you've had. I've escalated your case to a human manager. Your ticket ID is CS-A1B2 and the estimated wait time is about 2 hours. You'll be contacted via the email on file."
+  },
+  {
+    "id": "escalation-01-hardneg",
+    "category": "escalation",
+    "failure_mode": "inefficient_steps",
+    "is_hard_negative": true,
+    "eval_type": "step_efficiency",
+    "user_input": "I'm really frustrated with the service I received. I want to speak to a manager.",
+    "reference": "The customer's complaint has been escalated to a human agent. A ticket has been created.",
+    "tools_called": [
+      {
+        "name": "check_order_status",
+        "input_parameters": {"order_id": "unknown"},
+        "output": {"error": "Order 'unknown' not found."}
+      },
+      {
+        "name": "get_product_info",
+        "input_parameters": {"product_name": "unknown"},
+        "output": {"error": "Product 'unknown' not found in catalogue."}
+      },
+      {
+        "name": "escalate_to_human",
+        "input_parameters": {"reason": "customer requesting to speak with a manager about service dissatisfaction"},
+        "output": {"ticket_id": "CS-C3D4", "estimated_wait": "2 hours", "queue": "general"}
+      }
+    ],
+    "response": "I've escalated your case to a human manager. Your ticket ID is CS-C3D4 and the estimated wait time is about 2 hours.",
+    "_note": "Inefficient path: the agent called check_order_status and get_product_info (both returning errors) before calling escalate_to_human. The user message contained no order ID or product name — these first two calls were unnecessary and wasted a full tool-call round trip each. The final tool call (escalate_to_human) was correct, but the path to get there had 2 extra steps. StepEfficiencyMetric should fail this because escalate_to_human alone was the correct one-step solution. The final output is identical to the happy-path case — this is what makes it a hard negative: you cannot detect the inefficiency from the output text alone."
+  }
+]
