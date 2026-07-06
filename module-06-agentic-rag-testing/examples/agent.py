@@ -56,14 +56,23 @@ else:  # ollama
 # ---------------------------------------------------------------------------
 
 CORPUS = [
+    # WidgetCo company context
+    "WidgetCo is a B2B SaaS company that builds project-management and analytics tools for engineering teams. Founded in 2019 and originally headquartered in Austin, TX.",
+    # HQ relocation — hop-1 fact for the walk-in support 2-hop question
+    "Our headquarters relocated from Austin to Denver in 2022.",
+    # Denver support policy — hop-2 fact for the walk-in support 2-hop question
+    "The Denver office does not offer walk-in support; all support is online only.",
+    # WidgetPro product line — hop-1 and hop-2 facts for the cancellation-fee 2-hop question
     "WidgetPro 2000 was discontinued in 2023 and replaced by WidgetPro 3000.",
     "WidgetPro 3000's cancellation fee is $0 -- it can be canceled anytime at no charge.",
     "WidgetPro 2000's cancellation fee was $50 before it was discontinued.",
-    "Our premium support plan includes 24/7 phone access and a 1-hour response SLA.",
+    # TurboMax product line — hop-1 and hop-2 facts for the pricing 2-hop question
     "TurboMax 5 was renamed to TurboMax Pro in 2024 after a rebranding update.",
     "TurboMax Pro's annual subscription costs $299, unchanged from TurboMax 5's price.",
-    "Our headquarters relocated from Austin to Denver in 2022.",
-    "The Denver office does not offer walk-in support; all support is online only.",
+    # Support plan — single-hop hallucination test
+    "Our premium support plan includes 24/7 phone access and a 1-hour response SLA.",
+    # Intentional gap: NO fact about TurboMax Pro's cancellation fee exists in this corpus.
+    # That absence is the point of the graceful-failure-01 golden dataset entry.
 ]
 
 
