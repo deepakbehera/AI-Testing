@@ -172,9 +172,21 @@ async def _generate(question: str, facts: List[str], uncertain: bool = False) ->
 # ---------------------------------------------------------------------------
 
 @dataclass
+class HopTrace:
+    """One retrieval step — query sent, facts returned, and the planner's decision."""
+    hop_number: int
+    query: str
+    retrieved: List[str]
+    planner_reasoning: str
+    enough_info: bool
+    next_query: Optional[str] = None
+
+
+@dataclass
 class AgentResult:
     response: str
     retrieved_contexts: List[str]
+    hops: List[HopTrace]          # full per-hop trace, used by LLM judges
     num_hops: int
     hit_max_hops: bool  # True if the planner NEVER confirmed enough_info before hops ran out --
                          # the bounded-loop shape of "infinite retrieval loop" (Day 1's failure-mode table)
@@ -188,6 +200,7 @@ async def agentic_rag(question: str, max_hops: int = 3, verbose: bool = False) -
     reasoning -- useful in a notebook to see a real decision, not a rule.
     """
     facts: List[str] = []
+    hop_traces: List[HopTrace] = []
     query = question
     hop = 0
     hit_max_hops = True
@@ -197,6 +210,14 @@ async def agentic_rag(question: str, max_hops: int = 3, verbose: bool = False) -
             if f not in facts:
                 facts.append(f)
         decision = await _plan(question, facts)
+        hop_traces.append(HopTrace(
+            hop_number=hop,
+            query=query,
+            retrieved=new_facts,
+            planner_reasoning=decision.reasoning,
+            enough_info=decision.enough_info,
+            next_query=decision.next_query if not decision.enough_info else None,
+        ))
         if verbose:
             print(f"[hop {hop}] query={query!r}")
             print(f"[hop {hop}] retrieved: {new_facts}")
@@ -214,7 +235,13 @@ async def agentic_rag(question: str, max_hops: int = 3, verbose: bool = False) -
     # Be honest with the generator about an unconfirmed stop -- it should hedge
     # rather than confidently answer from facts the planner itself wasn't sure covered the question.
     response = await _generate(question, facts, uncertain=hit_max_hops)
-    return AgentResult(response=response, retrieved_contexts=facts, num_hops=hop, hit_max_hops=hit_max_hops)
+    return AgentResult(
+        response=response,
+        retrieved_contexts=facts,
+        hops=hop_traces,
+        num_hops=hop,
+        hit_max_hops=hit_max_hops,
+    )
 
 
 # Exposed for notebook LLM-judge usage — same client and model the agent loop uses.
