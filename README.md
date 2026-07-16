@@ -171,9 +171,9 @@ Secrets (API keys for OpenAI, Anthropic, etc.) go in a local `.env` file — nev
 - [x] Module 2 — Python for AI Testing *(+ CI/CD basics)*
 - [x] Module 3 — Fundamentals of AI Testing *(+ red-teaming intro)*
 - [x] Module 4 — DeepEval *(+ CI)*
-- [ ] Module 5 — RAGAS
-- [ ] Module 6 — Agentic RAG
-- [ ] Module 7 — Agents with DeepEval *(+ agent red-teaming)*
+- [x] Module 5 — RAGAS
+- [x] Module 6 — Agentic RAG
+- [ ] Module 7 — Agents with DeepEval 
 - [ ] Module 8 — Promptfoo *(+ redteam, CI)*
 - [ ] Module 9 — Voice Agents
 
