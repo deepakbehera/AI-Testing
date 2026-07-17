@@ -1,0 +1,63 @@
+# Activity 1 — Comparing two prompts on a local Ollama model.
+#
+# promptfoo's core "eval" workflow: same inputs, same model, two candidate
+# prompts, side by side, scored by assertions. No custom code — just this YAML
+# and the two files in prompts/. Runs fully local and free on Ollama.
+#
+#   promptfoo eval -c compare-prompts.yaml     # run the comparison
+#   promptfoo view                             # open the side-by-side matrix
+#
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+
+description: "Trip-packing prompt comparison — terse vs detailed (Ollama, local)"
+
+# The two candidate prompts. promptfoo runs EVERY prompt against EVERY provider
+# against EVERY test — with the two models below, a 2-prompt x 2-model matrix.
+prompts:
+  - file://prompts/terse.json
+  - file://prompts/detailed.json
+
+# TWO local models, so the matrix compares prompts AND models at once:
+# 2 prompts x 2 models x N tests. `ollama:chat:<model>` talks to your local
+# Ollama server (default http://localhost:11434). temperature 0 keeps runs
+# reproducible. Pull both first: `ollama pull llama3.2:3b` and
+# `ollama pull deepseek-r1:1.5b`.
+providers:
+  - id: ollama:chat:llama3.2:3b
+    config:
+      temperature: 0
+  - id: ollama:chat:deepseek-r1:1.5b
+    config:
+      temperature: 0
+
+# Applied to every test unless overridden. `latency` guards against a prompt
+# that is "better" only because it is unusably slow.
+defaultTest:
+  assert:
+    - type: latency
+      threshold: 60000 # ms — generous ceiling for a small local model
+
+# Each test is one destination. `icontains-any` is case-insensitive and passes
+# if ANY listed value appears — i.e. "a good answer for THIS place mentions at
+# least one clearly appropriate item."
+tests:
+  - description: "Cold-weather destination should surface warm items"
+    vars:
+      destination: Reykjavik in January
+    assert:
+      - type: icontains-any
+        value: ["jacket", "coat", "warm", "layers", "gloves", "thermal"]
+
+  - description: "Hot-weather destination should surface light/sun items"
+    vars:
+      destination: a beach holiday in Bali
+    assert:
+      - type: icontains-any
+        value: ["sunscreen", "light", "shorts", "hat", "sunglasses", "swimwear"]
+
+  - description: "Rainy destination should surface rain protection"
+    vars:
+      destination: London in November
+    assert:
+      - type: icontains-any
+        value: ["umbrella", "waterproof", "rain", "raincoat"]

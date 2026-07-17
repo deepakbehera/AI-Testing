@@ -33,8 +33,8 @@ This repo is my working notebook for the course — lecture notes, code samples,
 ├── module-04-deepeval-llm-testing/
 ├── module-05-ragas-rag-testing/
 ├── module-06-agentic-rag-testing/
-├── module-07-deepeval-agents/
-├── module-08-promptfoo/
+├── module-07-deepeval-agent-testing/
+├── module-08-adversarial-red-teaming/
 ├── module-09-voice-agent-testing/
 ├── .github/
 │   └── workflows/          # CI/CD pipelines for automated evals
@@ -139,10 +139,11 @@ Each module folder contains:
   - Tool / function-call abuse, indirect prompt injection via tool outputs
   - System-prompt leakage and data exfiltration through agents
 
-### Module 8 — Promptfoo for Prompt & Regression Testing (2h)
-- YAML-based assertions, output validation, multi-model comparison, regression testing
-- **Promptfoo `redteam`** — jailbreak, prompt injection, PII leakage attack packs
-- **Promptfoo in CI** — `promptfoo eval` thresholds, matrix builds, scheduled red-team runs (`cron`)
+### Module 8 — Adversarial Testing & Red-Teaming with Promptfoo (2h)
+- **Day 1** — what adversarial testing & red-teaming are; installing Promptfoo; a first eval comparing **two prompts across two local Ollama models** with assertions
+- **Day 2** — extensive testing of the Module 7 **trip agent** via a custom Python provider: functional + adversarial evals (capable agent, **free local Ollama judge**), executing and **visualising in the web UI** (`promptfoo view`)
+- Attacks map to OWASP LLM01 (prompt injection), LLM07 (system-prompt leakage); deterministic tripwires + `llm-rubric`; defense-in-depth (provider content filters)
+- *Going further:* automated `promptfoo redteam` (plugins/strategies) and CI gating (`promptfoo/promptfoo-action`)
 
 ### Module 9 — Voice Agent Testing (2h)
 - Speech-to-text and text-to-speech testing, intent accuracy

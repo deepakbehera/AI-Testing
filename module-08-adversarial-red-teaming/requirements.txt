@@ -1,4 +1,19 @@
-deepeval>=1.4.0
-langsmith>=0.1.0
-openai>=1.0.0
+# Module 8 — Adversarial Testing & Red-Teaming with Promptfoo
+#
+# Promptfoo itself is a Node.js CLI, NOT a pip package — install it separately:
+#   npm install -g promptfoo     (or use `npx promptfoo@latest`, or `brew install promptfoo`)
+#
+# The Python deps below are only for the custom provider (examples/trip_provider.py),
+# which imports and runs the Module 7 trip agent. They're the same packages
+# Module 7 already uses — install into the shared project venv.
+
 python-dotenv>=1.0.0
+openai>=1.30.0
+
+# The trip agent talks to a local MCP server and retries transient gateway errors.
+mcp>=1.0.0
+httpx>=0.27.0
+tenacity>=8.0.0
+
+# Optional: LangSmith tracing (the agent is @traceable; no-op unless enabled).
+langsmith>=0.1.80
