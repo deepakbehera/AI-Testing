@@ -1,0 +1,112 @@
+name: Agent Evaluation — DeepEval
+
+# ── Triggers ──────────────────────────────────────────────────────────────────
+on:
+  push:
+    branches: [main]
+    paths:
+      - "module-07-deepeval-agent-testing/ci/**"
+      - "module-07-deepeval-agent-testing/trip_agent/**"
+      - "module-07-deepeval-agent-testing/trip_mcp_server/**"
+      - ".github/workflows/agent-eval.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "module-07-deepeval-agent-testing/ci/**"
+      - "module-07-deepeval-agent-testing/trip_agent/**"
+      - "module-07-deepeval-agent-testing/trip_mcp_server/**"
+  workflow_dispatch:           # manual "Run workflow" button in Actions tab
+
+# ── Jobs ──────────────────────────────────────────────────────────────────────
+# Unlike modules 4/5 (which call a bare LLM directly, since there's no deployed
+# app), module 7's agent IS the thing under test -- trip_agent/ is a real agent
+# whose tools come from a local MCP server (trip_mcp_server/server.py, launched
+# over stdio), chaining geocode -> get_weather -> suggest_packing per query.
+# generate_eval_dataset.py runs it live for normal rows; hard-negative rows
+# carry a pre-baked (deliberately wrong) actual_output/tools_called instead.
+# If LangSmith secrets are configured, each live run is also traced to the
+# LangSmith UI (MCP tool calls as nested spans) -- optional, CI passes without.
+jobs:
+
+  agent-eval:
+    name: Agent Evaluation Suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('module-07-deepeval-agent-testing/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: pip install -r module-07-deepeval-agent-testing/requirements.txt
+
+      - name: Generate eval dataset (runs the live trip_agent + MCP server)
+        env:
+          PROVIDER: azure
+          AZURE_OPENAI_ENDPOINT_C: ${{ secrets.AZURE_OPENAI_ENDPOINT_C }}
+          AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
+          AZURE_OPENAI_DEPLOYMENT: ${{ vars.AZURE_OPENAI_DEPLOYMENT || 'DeepSeek-V3.2' }}
+          # Optional: set these repo secrets/vars to also trace runs to LangSmith.
+          LANGSMITH_TRACING: ${{ vars.LANGSMITH_TRACING || 'false' }}
+          LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
+          LANGSMITH_PROJECT: ${{ vars.LANGSMITH_PROJECT || 'module-07-trip-agent' }}
+        run: |
+          cd module-07-deepeval-agent-testing/ci
+          python generate_eval_dataset.py
+
+      - name: Run agent behavior suite (all 4 metrics)
+        env:
+          AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+          AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+          AZURE_MODEL_NAME: ${{ vars.AZURE_MODEL_NAME || 'DeepSeek-V3.2' }}
+          AZURE_DEPLOYMENT_NAME: ${{ vars.AZURE_DEPLOYMENT_NAME || 'DeepSeek-V3.2' }}
+          OPENAI_API_VERSION: ${{ vars.OPENAI_API_VERSION || '2025-01-01-preview' }}
+        run: |
+          cd module-07-deepeval-agent-testing/ci
+          pytest test_agent_eval.py -v --tb=short \
+            --html=eval_report.html --self-contained-html \
+            2>&1 | tee eval_output.txt
+
+      - name: Run hard-negative metric-sensitivity suite
+        env:
+          AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+          AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+          AZURE_MODEL_NAME: ${{ vars.AZURE_MODEL_NAME || 'DeepSeek-V3.2' }}
+          AZURE_DEPLOYMENT_NAME: ${{ vars.AZURE_DEPLOYMENT_NAME || 'DeepSeek-V3.2' }}
+          OPENAI_API_VERSION: ${{ vars.OPENAI_API_VERSION || '2025-01-01-preview' }}
+        run: |
+          cd module-07-deepeval-agent-testing/ci
+          pytest test_hard_negatives.py -v --tb=short \
+            --html=hard_negative_report.html --self-contained-html \
+            2>&1 | tee hard_negative_output.txt
+
+      - name: Write coverage matrix to job summary
+        if: always()
+        run: |
+          cd module-07-deepeval-agent-testing/ci
+          echo "## Agent Coverage Matrix (capability x failure mode)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          python coverage_matrix.py >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📄 Download the full HTML reports from the Artifacts section above." >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload eval artifacts
+        uses: actions/upload-artifact@v4
+        if: always()         # upload even on failure -- you need the report to debug
+        with:
+          name: agent-eval-report-${{ github.run_id }}
+          path: |
+            module-07-deepeval-agent-testing/ci/eval_dataset.json
+            module-07-deepeval-agent-testing/ci/eval_report.html
+            module-07-deepeval-agent-testing/ci/eval_output.txt
+            module-07-deepeval-agent-testing/ci/hard_negative_report.html
+            module-07-deepeval-agent-testing/ci/hard_negative_output.txt
+          retention-days: 30

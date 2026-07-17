@@ -1,0 +1,161 @@
+[
+  {
+    "id": "pack-paris-01",
+    "category": "temperate_destination",
+    "failure_mode": "wrong_argument",
+    "is_hard_negative": false,
+    "input": "What should I pack for a 3-day trip to Paris?",
+    "expected_place": "Paris",
+    "expected_tools": ["geocode", "get_weather", "suggest_packing"]
+  },
+  {
+    "id": "pack-tokyo-01",
+    "category": "temperate_destination",
+    "failure_mode": "wrong_tool",
+    "is_hard_negative": false,
+    "input": "I'm traveling to Tokyo for a few days -- what should I bring?",
+    "expected_place": "Tokyo",
+    "expected_tools": ["geocode", "get_weather", "suggest_packing"]
+  },
+  {
+    "id": "pack-reykjavik-01",
+    "category": "cold_destination",
+    "failure_mode": "inefficient_steps",
+    "is_hard_negative": false,
+    "input": "What should I pack for a 3-day trip to Reykjavik?",
+    "expected_place": "Reykjavik",
+    "expected_tools": ["geocode", "get_weather", "suggest_packing"]
+  },
+  {
+    "id": "pack-dubai-01",
+    "category": "warm_destination",
+    "failure_mode": "incomplete_answer",
+    "is_hard_negative": false,
+    "input": "What should I wear for my upcoming visit to Dubai?",
+    "expected_place": "Dubai",
+    "expected_tools": ["geocode", "get_weather", "suggest_packing"]
+  },
+  {
+    "id": "pack-london-01",
+    "category": "temperate_destination",
+    "failure_mode": "no_tool_called",
+    "is_hard_negative": false,
+    "input": "Packing advice for a trip to London, please.",
+    "expected_place": "London",
+    "expected_tools": ["geocode", "get_weather", "suggest_packing"]
+  },
+
+  {
+    "id": "pack-tokyo-01-hardneg",
+    "category": "temperate_destination",
+    "failure_mode": "wrong_tool",
+    "is_hard_negative": true,
+    "target_metric": "tool_correctness",
+    "input": "I'm traveling to Tokyo for a few days -- what should I bring?",
+    "expected_place": "Tokyo",
+    "expected_tools": ["geocode", "get_weather", "suggest_packing"],
+    "actual_output": "For Tokyo you'll want light layers, a t-shirt or two, and a light jacket for the evenings. Comfortable walking shoes are a good idea too.",
+    "tools_called": [
+      {
+        "name": "geocode",
+        "input_parameters": {"place": "Tokyo"},
+        "output": "{\"name\": \"Tokyo\", \"country\": \"Japan\", \"latitude\": 35.6895, \"longitude\": 139.69171}"
+      },
+      {
+        "name": "get_weather",
+        "input_parameters": {"latitude": 35.6895, "longitude": 139.69171, "days": 3},
+        "output": "{\"current\": {\"temperature_c\": 26.0, \"windspeed_kmh\": 8.0, \"conditions\": \"mainly clear\"}, \"forecast\": [{\"date\": \"2026-07-16\", \"temp_max_c\": 29.0, \"temp_min_c\": 24.0, \"conditions\": \"partly cloudy\"}]}"
+      }
+    ]
+  },
+  {
+    "id": "pack-paris-01-hardneg",
+    "category": "temperate_destination",
+    "failure_mode": "wrong_argument",
+    "is_hard_negative": true,
+    "target_metric": "argument_correctness",
+    "input": "What should I pack for a 3-day trip to Paris?",
+    "expected_place": "Paris",
+    "expected_tools": ["geocode", "get_weather", "suggest_packing"],
+    "actual_output": "Expect 14-22 C with overcast skies. Pack light layers, t-shirts, a light jacket for evenings, a waterproof jacket, and a compact umbrella.",
+    "tools_called": [
+      {
+        "name": "geocode",
+        "input_parameters": {"place": "Berlin"},
+        "output": "{\"name\": \"Berlin\", \"country\": \"Germany\", \"latitude\": 52.52437, \"longitude\": 13.41053}"
+      },
+      {
+        "name": "get_weather",
+        "input_parameters": {"latitude": 52.52437, "longitude": 13.41053, "days": 3},
+        "output": "{\"current\": {\"temperature_c\": 19.0, \"windspeed_kmh\": 11.0, \"conditions\": \"overcast\"}, \"forecast\": [{\"date\": \"2026-07-16\", \"temp_max_c\": 22.0, \"temp_min_c\": 14.0, \"conditions\": \"overcast\"}]}"
+      },
+      {
+        "name": "suggest_packing",
+        "input_parameters": {"temp_max_c": 22.0, "temp_min_c": 14.0, "conditions": "overcast"},
+        "output": "{\"summary\": \"Expect 14-22 C with overcast. Pack for this range.\", \"items\": [\"light layers\", \"t-shirts\", \"a light jacket for evenings\", \"waterproof jacket\", \"compact umbrella\"]}"
+      }
+    ]
+  },
+  {
+    "id": "pack-reykjavik-01-hardneg",
+    "category": "cold_destination",
+    "failure_mode": "inefficient_steps",
+    "is_hard_negative": true,
+    "target_metric": "step_efficiency",
+    "input": "What should I pack for a 3-day trip to Reykjavik?",
+    "expected_place": "Reykjavik",
+    "expected_tools": ["geocode", "get_weather", "suggest_packing"],
+    "actual_output": "For Reykjavik pack a warm jacket, sweater/fleece, long trousers, a waterproof jacket, and a compact umbrella -- it will be cool and drizzly.",
+    "tools_called": [
+      {
+        "name": "geocode",
+        "input_parameters": {"place": "Reykjavik"},
+        "output": "{\"name\": \"Reykjavik\", \"country\": \"Iceland\", \"latitude\": 64.13548, \"longitude\": -21.89541}"
+      },
+      {
+        "name": "geocode",
+        "input_parameters": {"place": "Reykjavik"},
+        "output": "{\"name\": \"Reykjavik\", \"country\": \"Iceland\", \"latitude\": 64.13548, \"longitude\": -21.89541}"
+      },
+      {
+        "name": "get_weather",
+        "input_parameters": {"latitude": 64.13548, "longitude": -21.89541, "days": 3},
+        "output": "{\"current\": {\"temperature_c\": 10.2, \"windspeed_kmh\": 12.6, \"conditions\": \"light drizzle\"}, \"forecast\": [{\"date\": \"2026-07-16\", \"temp_max_c\": 12.4, \"temp_min_c\": 9.3, \"conditions\": \"light drizzle\"}]}"
+      },
+      {
+        "name": "get_weather",
+        "input_parameters": {"latitude": 64.13548, "longitude": -21.89541, "days": 3},
+        "output": "{\"current\": {\"temperature_c\": 10.2, \"windspeed_kmh\": 12.6, \"conditions\": \"light drizzle\"}, \"forecast\": [{\"date\": \"2026-07-16\", \"temp_max_c\": 12.4, \"temp_min_c\": 9.3, \"conditions\": \"light drizzle\"}]}"
+      },
+      {
+        "name": "suggest_packing",
+        "input_parameters": {"temp_max_c": 12.4, "temp_min_c": 9.3, "conditions": "light drizzle"},
+        "output": "{\"summary\": \"Expect 9-12 C with light drizzle. Pack for this range.\", \"items\": [\"warm jacket\", \"sweater/fleece\", \"long trousers\", \"waterproof jacket\", \"compact umbrella\"]}"
+      }
+    ]
+  },
+  {
+    "id": "pack-dubai-01-hardneg",
+    "category": "warm_destination",
+    "failure_mode": "incomplete_answer",
+    "is_hard_negative": true,
+    "target_metric": "task_completion",
+    "input": "What should I wear for my upcoming visit to Dubai?",
+    "expected_place": "Dubai",
+    "expected_tools": ["geocode", "get_weather", "suggest_packing"],
+    "actual_output": "I'm not able to help with packing or clothing recommendations. You may want to check a travel guide for Dubai.",
+    "tools_called": []
+  },
+  {
+    "id": "pack-london-01-hardneg",
+    "category": "temperate_destination",
+    "failure_mode": "no_tool_called",
+    "is_hard_negative": true,
+    "target_metric": "tool_correctness",
+    "input": "Packing advice for a trip to London, please.",
+    "expected_place": "London",
+    "expected_tools": ["geocode", "get_weather", "suggest_packing"],
+    "actual_output": "London is usually mild and rainy, so pack a light jacket, a sweater, an umbrella, and comfortable walking shoes.",
+    "tools_called": []
+  }
+]

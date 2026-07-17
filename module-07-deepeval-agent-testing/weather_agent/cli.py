@@ -19,16 +19,33 @@ import sys
 from agent import run_agent
 
 
-async def main() -> None:
-    query = sys.argv[1]
-    response = await run_agent(query, verbose=False)
-    print(json.dumps({
-        "output": response.output,
-        "tools_called": [
-            {"name": tc.name, "input_parameters": tc.input_parameters, "output": tc.output}
-            for tc in response.tools_called
-        ],
-    }))
+async def chat():
+    while True:
+        query = input("Enter your query (or 'exit' to quit): ")
+        if query.lower() == 'exit':
+            break
+        response = await run_agent(query, verbose=False)
+        print(json.dumps({
+            "output": response.output,
+            "tools_called": [
+                {"name": tc.name, "input_parameters": tc.input_parameters, "output": tc.output}
+                for tc in response.tools_called
+            ],
+        }, indent=2))
+
+if 
+
+
+# async def main() -> None:
+#     query = sys.argv[1]
+#     response = await run_agent(query, verbose=False)
+#     print(json.dumps({
+#         "output": response.output,
+#         "tools_called": [
+#             {"name": tc.name, "input_parameters": tc.input_parameters, "output": tc.output}
+#             for tc in response.tools_called
+#         ],
+#     }))
 
 
 if __name__ == "__main__":
