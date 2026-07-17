@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+description: ''
+env: {}
+extensions: []
+prompts:
+  - >-
+    Write a short, fun story about a {{animal}} going on an adventure in
+    {{location}}. Make it entertaining and suitable for children.
+providers:
+  - id: 'ollama:llama3.2:3b          '
+    config:
+      baseUrl: http://localhost:11434
+      temperature: 0.7
+      num_predict: 1024
+    label: 'ollama:llama3.2:3b          '
+scenarios: []
+tests:
+  - description: Fun animal adventure story
+    vars:
+      animal: penguin
+      location: tropical island
+    assert:
+      - type: contains-any
+        value: penguin, tropical island
+      - type: llm-rubric
+        value: >-
+          Is this a fun, child-friendly story featuring a penguin on a tropical
+          island adventure?
+
+
+          Criteria:
+
+          1. Does it mention a penguin as the main character?
+
+          2. Does the story take place on a tropical island?
+
+          3. Is it entertaining and appropriate for children?
+
+          4. Does it have a sense of adventure?
+evaluateOptions: {}
+defaultTest:
+  options:
+    provider: ollama:chat:llama3.2:3b
+derivedMetrics: []

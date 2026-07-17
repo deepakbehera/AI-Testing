@@ -30,16 +30,26 @@ providers:
     config:
       temperature: 0
 
-# Applied to every test unless overridden. `latency` guards against a prompt
-# that is "better" only because it is unusably slow.
+# Applied to every test unless overridden.
 defaultTest:
+  # The `llm-rubric` assertion below is graded by an LLM judge. Point that judge
+  # at a small, free, LOCAL Ollama model so the whole comparison still costs
+  # nothing. (This is the same "capable target, cheap local judge" split you'll
+  # use on the trip agent in Day 2.)
+  options:
+    provider: ollama:chat:llama3.2:3b
   assert:
     - type: latency
-      threshold: 60000 # ms — generous ceiling for a small local model
+      threshold: 60000 # ms — guards against a prompt that's "better" only by being unusably slow
+    # A model-graded quality check that plain keyword-matching can't express:
+    # is this actually a good, well-organised packing answer for THIS place?
+    # {{destination}} is interpolated so the rubric is specific per test.
+    - type: llm-rubric
+      value: "The response is a helpful, well-organised packing list whose items suit the likely weather and season of {{destination}}. PASS if it reads as sensible trip-packing advice; FAIL if it is off-topic, empty, or clearly wrong for that climate."
 
-# Each test is one destination. `icontains-any` is case-insensitive and passes
-# if ANY listed value appears — i.e. "a good answer for THIS place mentions at
-# least one clearly appropriate item."
+# Each test is one destination. `icontains-any` is a cheap, exact keyword check;
+# it passes if ANY listed value appears (case-insensitive). Together with the
+# llm-rubric above, each cell gets one deterministic check and one semantic one.
 tests:
   - description: "Cold-weather destination should surface warm items"
     vars:
