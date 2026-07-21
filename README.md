@@ -146,8 +146,9 @@ Each module folder contains:
 - *Going further:* automated `promptfoo redteam` (plugins/strategies) and CI gating (`promptfoo/promptfoo-action`)
 
 ### Module 9 — Voice Agent Testing (2h)
-- Speech-to-text and text-to-speech testing, intent accuracy
-- Latency, interruption, and fallback testing
+- **Day 1** — build a local voice agent: **Sarvam** STT + **Groq** LLM (fast/streaming) + **Sarvam** TTS, file-in/file-out with per-stage latency; intro to voice-specific testing
+- **Day 2** — implement the tests: STT accuracy (**WER** with `jiwer`), the **TTS→STT round-trip**, latency-budget assertions, and fallback hard negatives (silence / gibberish / out-of-scope)
+- The brain is tested as before (reuse Promptfoo/DeepEval on the transcript); what's new is ears, mouth, and latency — all still the Module 4 Day 4 testing mindset, with audio as the input
 
 ## Getting Started
 

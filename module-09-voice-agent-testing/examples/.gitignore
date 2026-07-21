@@ -1,0 +1,6 @@
+# generated at runtime by the voice agent / notebook
+audio/*.wav
+audio/*.mp3
+reply.wav
+__pycache__/
+.env

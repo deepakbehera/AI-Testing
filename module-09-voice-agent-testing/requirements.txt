@@ -1,0 +1,24 @@
+# Module 9 — Voice Agent Testing
+
+# Core
+python-dotenv>=1.0.0
+
+# The brain: Groq via its OpenAI-compatible API (streaming).
+openai>=1.30.0
+
+# The ears + mouth: Sarvam official SDK (STT saarika + TTS bulbul).
+sarvamai>=0.1.0
+
+# Notebook audio playback (usually already present with Jupyter).
+ipython>=8.0.0
+
+# ── Day 2 (testing) — the small good-to-have suite runs on pytest alone ─────────
+pytest>=8.0.0
+
+# ── Optional: only for the "going deeper" extensions ────────────────────────────
+# Formal STT accuracy (WER/CER) over accent/noise-partitioned clips:
+# jiwer>=3.0.0
+# Live microphone capture/playback for chat.py --mic (the agent is otherwise
+# file-in/file-out and needs neither):
+# sounddevice>=0.4.6
+# soundfile>=0.12.1
