@@ -15,7 +15,7 @@ This is the course finale, and it reuses everything. A voice agent is the text b
 | Day | Focus | What you'll do |
 |---|---|---|
 | **1** | Build a local voice agent + meet voice testing | STT → LLM → TTS pipeline with per-stage latency; the checklist of what's new to test |
-| **2** | Implement the tests (LLM-as-judge) | STT fidelity, TTS→STT round-trip, and reply-quality `GEval`s; plus latency & WER *(built in a later notebook)* |
+| **2** | Test it with an LLM judge (DeepEval `GEval`) | Grade reply quality, STT fidelity, and TTS intelligibility; plus a latency check |
 
 ---
 
@@ -91,17 +91,33 @@ The Day-1 agent hands Day 2 two things for free: **`timings_ms`** (→ latency a
 
 ---
 
-## DAY 2 — Testing the Voice Agent *(preview — built in a later notebook)*
+## DAY 2 — Testing the Voice Agent with an LLM Judge (60 min)
 
-Day 1 introduces *what* we'll test (see the notebook's "What we'll test in Day 2" section); Day 2 will implement it in its own notebook. The scope is **LLM-as-a-judge** — DeepEval `GEval`, the same tool from Modules 4 & 7 — because speech is noisy and replies are open-ended, so we grade **meaning, not exact strings**. One judging method, three stages:
+Day 1 introduced *what* to test; Day 2 **runs** it. The scope is **LLM-as-a-judge** — DeepEval `GEval`, the same tool from Modules 4, 7 & 8 — because speech is noisy and replies are open-ended, so we grade **meaning, not exact strings**. One judging method, three stages.
 
-| Stage | Test | What the judge is asked |
+### Learning objectives
+- Point DeepEval `GEval` at a **Groq** judge via `LocalModel` (self-contained — no new provider)
+- Grade all three stages with plain-English criteria: reply quality, STT fidelity, TTS intelligibility
+- Keep latency as a plain numeric check (no judge needed)
+
+### The judge
+A `GEval` metric backed by `LocalModel(model="llama-3.3-70b-versatile", base_url=Groq)` — a **stronger, different** model than the agent's brain (`llama-3.1-8b-instant`), so it isn't grading its own homework.
+
+### The three tests (`examples/02_testing_voice_agent.ipynb`)
+
+| Stage | Metric | What the judge is asked |
 |---|---|---|
-| **STT (ears)** | Transcription fidelity | Does the transcript preserve the meaning? (a changed place/number fails) |
-| **TTS (mouth)** | Intelligibility — TTS→STT round-trip | Speak a line, transcribe it back: did the meaning (names, numbers) survive? |
-| **LLM (brain)** | Reply quality | Is the reply relevant, safe, and *speakable* (short, no markdown)? |
+| **LLM (brain)** | Reply quality | Is the reply relevant, safe, and *speakable* (1–3 sentences, no markdown)? |
+| **STT (ears)** | Transcription fidelity | Does the transcript preserve the meaning of the known reference? (a changed place/number fails — catches Day 1's "Manali → Lanali") |
+| **TTS (mouth)** | Intelligibility (round-trip) | Speak a line, transcribe it back: did the meaning (number, city) survive? |
 
-Complementary, non-judge checks also on the Day 2 menu: **latency** budgets on the `timings_ms` the agent already returns (Module 4 Day 5's `LatencyMetric`, on voice), and **WER** with `jiwer` for the hard STT cases. That's the **pipeline stage × failure mode** coverage matrix — the Module 4 Day 4 artifact, one last time, for voice.
+Each `GEval` is just a **criteria** string + which fields the judge sees (`INPUT`, `ACTUAL_OUTPUT`, `EXPECTED_OUTPUT`) — identical to Modules 4/8, now on audio. Latency stays a plain `timings_ms` budget check.
+
+### Going deeper (optional)
+Add more turns (accents, code-switching, numbers) and reuse the same metrics; add **WER** with `jiwer` alongside STT fidelity for hard cases; tighten the latency budget. That's the full **pipeline stage × failure mode** coverage — the Module 4 Day 4 artifact, one last time, for voice.
+
+### Demo you'll run
+**`examples/02_testing_voice_agent.ipynb`** — configure the Groq judge, run one turn, grade all three stages, check latency.
 
 ---
 

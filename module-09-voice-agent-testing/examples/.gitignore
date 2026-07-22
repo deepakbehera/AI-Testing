@@ -4,3 +4,6 @@ audio/*.mp3
 reply.wav
 __pycache__/
 .env
+
+# any stray recordings
+*.wav

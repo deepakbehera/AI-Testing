@@ -12,8 +12,9 @@ sarvamai>=0.1.0
 # Notebook audio playback (usually already present with Jupyter).
 ipython>=8.0.0
 
-# ── Day 2 (testing) — the small good-to-have suite runs on pytest alone ─────────
-pytest>=8.0.0
+# ── Day 2 (testing) — LLM-as-judge for the three stages ─────────────────────────
+# DeepEval provides GEval (the judge) and LocalModel (points GEval at Groq).
+deepeval>=4.0.0
 
 # ── Optional: only for the "going deeper" extensions ────────────────────────────
 # Formal STT accuracy (WER/CER) over accent/noise-partitioned clips:
