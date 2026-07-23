@@ -36,6 +36,7 @@ This repo is my working notebook for the course — lecture notes, code samples,
 ├── module-07-deepeval-agent-testing/
 ├── module-08-adversarial-red-teaming/
 ├── module-09-voice-agent-testing/
+├── bonus/                  # extra topics (own isolated venv) — e.g. classical ML testing
 ├── .github/
 │   └── workflows/          # CI/CD pipelines for automated evals
 └── README.md
@@ -147,8 +148,13 @@ Each module folder contains:
 
 ### Module 9 — Voice Agent Testing (2h)
 - **Day 1** — build a local voice agent: **Sarvam** STT + **Groq** LLM (fast/streaming) + **Sarvam** TTS, file-in/file-out with per-stage latency; intro to voice-specific testing
-- **Day 2** — implement the tests: STT accuracy (**WER** with `jiwer`), the **TTS→STT round-trip**, latency-budget assertions, and fallback hard negatives (silence / gibberish / out-of-scope)
-- The brain is tested as before (reuse Promptfoo/DeepEval on the transcript); what's new is ears, mouth, and latency — all still the Module 4 Day 4 testing mindset, with audio as the input
+- **Day 2** — test it with an **LLM judge (DeepEval `GEval`)**: reply quality, STT fidelity, and TTS intelligibility (TTS→STT round-trip), plus a latency check
+- The brain is tested as before; what's new is ears, mouth, and latency — all still the Module 4 Day 4 testing mindset, with audio as the input
+
+### Bonus ([`bonus/`](bonus/)) — testing beyond LLMs
+Each topic is self-contained with its **own isolated venv**:
+- **Testing Classical ML Models** — ML types, **regression vs classification** and their metrics (MAE/RMSE/R² · accuracy/precision/recall/F1/confusion matrix), plus train/test split, overfitting, cross-validation & baselines — mapped back to the Module 3–4 testing mindset (`scikit-learn`, offline)
+- **Browser Testing with Playwright** — driving a real browser for E2E tests: locators, auto-waiting, web-first assertions; a live notebook, a `pytest` suite, and a headed watch-it-run script
 
 ## Getting Started
 
@@ -175,9 +181,10 @@ Secrets (API keys for OpenAI, Anthropic, etc.) go in a local `.env` file — nev
 - [x] Module 4 — DeepEval *(+ CI)*
 - [x] Module 5 — RAGAS
 - [x] Module 6 — Agentic RAG
-- [ ] Module 7 — Agents with DeepEval 
-- [ ] Module 8 — Promptfoo *(+ redteam, CI)*
-- [ ] Module 9 — Voice Agents
+- [x] Module 7 — Agents with DeepEval 
+- [x] Module 8 — Promptfoo *(+ redteam, CI)*
+- [x] Module 9 — Voice Agents
+- [x] Bonus — Classical ML testing · Playwright browser testing
 
 ---
 

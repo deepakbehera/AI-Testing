@@ -1,0 +1,12 @@
+# Bonus — Browser Testing with Playwright (Python)
+#
+# Isolated venv (own .venv here). Setup:
+#   cd bonus/playwright
+#   python3 -m venv .venv
+#   source .venv/bin/activate          # Windows: .venv\Scripts\activate
+#   pip install -r requirements.txt
+#   playwright install chromium        # one-time: downloads the browser binary
+
+playwright>=1.40
+pytest-playwright>=0.4     # the `page` fixture + `pytest --headed/--slowmo` flags
+ipykernel>=6.0.0           # so VSCode / Jupyter can use this venv for the notebook

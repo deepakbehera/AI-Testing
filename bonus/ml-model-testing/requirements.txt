@@ -1,0 +1,20 @@
+# Bonus Module — Testing Classical ML Models
+#
+# This module has its OWN isolated virtual environment (.venv/ inside the module)
+# so its ML stack doesn't mix with the LLM-testing venv used by Modules 1-9.
+#
+# Setup:
+#   cd bonus
+#   python3 -m venv .venv
+#   source .venv/bin/activate          # Windows: .venv\Scripts\activate
+#   pip install -r requirements.txt
+#   python -m ipykernel install --user --name ml-bonus   # optional: use this kernel in Jupyter
+
+scikit-learn>=1.4.0
+numpy>=1.26.0
+pandas>=2.0.0
+matplotlib>=3.7.0
+ipykernel>=6.0.0        # lets VSCode / Jupyter use this venv as a kernel
+
+# Optional: only if you want to launch a standalone notebook server
+# jupyter>=1.0.0
